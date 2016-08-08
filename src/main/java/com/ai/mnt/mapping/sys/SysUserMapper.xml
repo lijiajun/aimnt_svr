@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.sys.SysUserMapper">
+
+    <resultMap id="SysUserResultMap" type="com.ai.mnt.model.sys.SysUser">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="salt" property="salt" />
+        <result column="real_name" property="realName" />
+        <result column="base_id" property="baseId" />
+        <result column="email" property="email" />
+        <result column="phone_id" property="phoneId" />
+        <result column="user_avatar" property="userAvatar" />
+        <result column="last_login_ip" property="lastLoginIp" />
+        <result column="last_login_date" property="lastLoginDate" />
+        <result column="user_sts" property="userSts" />
+        <result column="remark" property="remark" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="SysUserColumns">
+        user_id,
+        user_name,
+        password,
+        salt,
+        real_name,
+        base_id,
+        email,
+        phone_id,
+        user_avatar,
+        last_login_ip,
+        last_login_date,
+        user_sts,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user (
+        user_name,
+        password,
+        salt,
+        real_name,
+        base_id,
+        email,
+        phone_id,
+        user_avatar,
+        last_login_ip,
+        last_login_date,
+        user_sts,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{userName},
+        #{password},
+        #{salt},
+        #{realName},
+        #{baseId},
+        #{email},
+        #{phoneId},
+        #{userAvatar},
+        #{lastLoginIp},
+        #{lastLoginDate},
+        #{userSts},
+        #{remark},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into sys_user (
+        user_name,
+        password,
+        salt,
+        real_name,
+        base_id,
+        email,
+        phone_id,
+        user_avatar,
+        last_login_ip,
+        last_login_date,
+        user_sts,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.userName},
+            #{item.password},
+            #{item.salt},
+            #{item.realName},
+            #{item.baseId},
+            #{item.email},
+            #{item.phoneId},
+            #{item.userAvatar},
+            #{item.lastLoginIp},
+            #{item.lastLoginDate},
+            #{item.userSts},
+            #{item.remark},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from sys_user
+        where
+        user_id = #{userId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from sys_user
+        where user_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update sys_user
+        <set>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="salt != null">
+                salt = #{salt},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phoneId != null">
+                phone_id = #{phoneId},
+            </if>
+            <if test="userAvatar != null">
+                user_avatar = #{userAvatar},
+            </if>
+            <if test="lastLoginIp != null">
+                last_login_ip = #{lastLoginIp},
+            </if>
+            <if test="lastLoginDate != null">
+                last_login_date = #{lastLoginDate},
+            </if>
+            <if test="userSts != null">
+                user_sts = #{userSts},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        user_id = #{userId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="SysUserResultMap">
+        select
+        <include refid="SysUserColumns" />
+        from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="findList" resultMap="SysUserResultMap">
+        select
+        <include refid="SysUserColumns" />
+        from sys_user
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="salt != null">
+                and salt = #{salt}
+            </if>
+            <if test="realName != null">
+                and real_name = #{realName}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="email != null">
+                and email = #{email}
+            </if>
+            <if test="phoneId != null">
+                and phone_id = #{phoneId}
+            </if>
+            <if test="userAvatar != null">
+                and user_avatar = #{userAvatar}
+            </if>
+            <if test="lastLoginIp != null">
+                and last_login_ip = #{lastLoginIp}
+            </if>
+            <if test="lastLoginDate != null">
+                and last_login_date = #{lastLoginDate}
+            </if>
+            <if test="userSts != null and userSts != ''">
+                and user_sts = #{userSts}
+            </if>
+            <if test="remark != null">
+                and remark = #{remark}
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[and create_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and create_date <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserByUserName" resultMap="SysUserResultMap">
+        select
+        <include refid="SysUserColumns" />
+        from sys_user where user_name = #{userName}
+    </select>
+    
+    <select id="findAll" resultMap="SysUserResultMap">
+        select
+        <include refid="SysUserColumns" />
+        from sys_user
+    </select>
+    
+</mapper>

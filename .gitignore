@@ -1,0 +1,19 @@
+# Eclipse project files
+.classpath
+.project
+.factorypath
+.settings/
+.externalToolBuilders/
+.apt_generated/
+
+
+# Intellij project files
+*.iml
+.idea/
+
+# Others
+target/
+ehcache/
+logs/
+*.log
+*.sql

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.inst.MntInstallBaseInfoMapper">
+
+    <resultMap id="MntInstallBaseInfoResultMap" type="com.ai.mnt.model.inst.MntInstallBaseInfo">
+        <id column="base_id" property="baseId" />
+        <result column="base_name" property="baseName" />
+        <result column="bu_id" property="buId" />
+        <result column="base_desc" property="baseDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntInstallBaseInfoColumns">
+        base_id,
+        base_name,
+        bu_id,
+        base_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="baseId">
+        insert into mnt_install_base_info (
+        base_name,
+        bu_id,
+        base_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{baseName},
+        #{buId},
+        #{baseDesc},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_install_base_info (
+        base_name,
+        bu_id,
+        base_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.baseName},
+            #{item.buId},
+            #{item.baseDesc},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_install_base_info
+        where
+        base_id = #{baseId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_install_base_info
+        where base_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_install_base_info
+        <set>
+            <if test="baseName != null">
+                base_name = #{baseName},
+            </if>
+            <if test="buId != null">
+                bu_id = #{buId},
+            </if>
+            <if test="baseDesc != null">
+                base_desc = #{baseDesc},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        base_id = #{baseId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntInstallBaseInfoResultMap">
+        select
+        <include refid="MntInstallBaseInfoColumns" />
+        from mnt_install_base_info
+        where base_id = #{baseId}
+    </select>
+
+    <select id="findList" resultMap="MntInstallBaseInfoResultMap">
+        select
+        <include refid="MntInstallBaseInfoColumns" />
+        from mnt_install_base_info
+        <where>
+            <if test="baseId != null">
+                base_id = #{baseId}
+            </if>
+            <if test="baseName != null and baseName!= ''">
+                and base_name = #{baseName}
+            </if>
+            <if test="buId != null">
+                and bu_id = #{buId}
+            </if>
+            <if test="baseDesc != null">
+                and base_desc = #{baseDesc}
+            </if>
+            <if test="deleteFlag != null and deleteFlag !=''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[and create_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and create_date <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntInstallBaseInfoResultMap">
+        select
+        <include refid="MntInstallBaseInfoColumns" />
+        from mnt_install_base_info
+    </select>
+    
+    
+</mapper>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.stat.MntReqTrackMapper">
+
+    <resultMap id="MntReqTrackResultMap" type="com.ai.mnt.model.stat.MntReqTrack">
+        <id column="track_id" property="trackId" />
+        <result column="base_id" property="baseId" />
+        <result column="base_name" property="baseName" />
+        <result column="dmp_base_name" property="dmpBaseName" />
+        <result column="prod_id" property="prodId" />
+        <result column="prod_name" property="prodName" />
+        <result column="dmp_prod_name" property="dmpProdName" />
+        <result column="biz_no" property="bizNo" />
+        <result column="biz_name" property="bizName" />
+        <result column="biz_type" property="bizType" />
+        <result column="biz_src" property="bizSrc" />
+        <result column="biz_sts" property="bizSts" />
+        <result column="node_person" property="nodePerson" />
+        <result column="priority" property="priority" />
+        <result column="urgent_level" property="urgentLevel" />
+        <result column="submit_date" property="submitDate" />
+        <result column="deal_days" property="dealDays" />
+        <result column="ask_end_date" property="askEndDate" />
+        <result column="plan_release_date" property="planReleaseDate" />
+        <result column="plan_online_date" property="planOnlineDate" />
+        <result column="dmp_update_time" property="dmpUpdateTime" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+        <result column="count" property="count" />
+    </resultMap>
+
+    <sql id="MntReqTrackColumns">
+        track_id,
+        base_id,
+        base_name,
+        dmp_base_name,
+        prod_id,
+        prod_name,
+        dmp_prod_name,
+        biz_no,
+        biz_name,
+        biz_type,
+        biz_src,
+        biz_sts,
+        node_person,
+        priority,
+        urgent_level,
+        submit_date,
+        deal_days,
+        ask_end_date,
+        plan_release_date,
+        plan_online_date,
+        dmp_update_time,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="trackId">
+        insert into mnt_req_track (
+        base_id,
+        base_name,
+        dmp_base_name,
+        prod_id,
+        prod_name,
+        dmp_prod_name,
+        biz_no,
+        biz_name,
+        biz_type,
+        biz_src,
+        biz_sts,
+        node_person,
+        priority,
+        urgent_level,
+        submit_date,
+        deal_days,
+        ask_end_date,
+        plan_release_date,
+        plan_online_date,
+        dmp_update_time,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{baseId},
+        #{baseName},
+        #{dmpBaseName},
+        #{prodId},
+        #{prodName},
+        #{dmpProdName},
+        #{bizNo},
+        #{bizName},
+        #{bizType},
+        #{bizSrc},
+        #{bizSts},
+        #{nodePerson},
+        #{priority},
+        #{urgentLevel},
+        #{submitDate},
+        #{dealDays},
+        #{askEndDate},
+        #{planReleaseDate},
+        #{planOnlineDate},
+        #{dmpUpdateTime},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_req_track (
+        base_id,
+        base_name,
+        dmp_base_name,
+        prod_id,
+        prod_name,
+        dmp_prod_name,
+        biz_no,
+        biz_name,
+        biz_type,
+        biz_src,
+        biz_sts,
+        node_person,
+        priority,
+        urgent_level,
+        submit_date,
+        deal_days,
+        ask_end_date,
+        plan_release_date,
+        plan_online_date,
+        dmp_update_time,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.baseId},
+            #{item.baseName},
+            #{item.dmpBaseName},
+            #{item.prodId},
+            #{item.prodName},
+            #{item.dmpProdName},
+            #{item.bizNo},
+            #{item.bizName},
+            #{item.bizType},
+            #{item.bizSrc},
+            #{item.bizSts},
+            #{item.nodePerson},
+            #{item.priority},
+            #{item.urgentLevel},
+            #{item.submitDate},
+            #{item.dealDays},
+            #{item.askEndDate},
+            #{item.planReleaseDate},
+            #{item.planOnlineDate},
+            #{item.dmpUpdateTime},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_req_track
+        where
+        track_id = #{trackId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_req_track
+        where track_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_req_track
+        <set>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="baseName != null">
+                base_name = #{baseName},
+            </if>
+            <if test="dmpBaseName != null">
+                dmp_base_name = #{dmpBaseName},
+            </if>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="prodName != null">
+                prod_name = #{prodName},
+            </if>
+            <if test="dmpProdName != null">
+                dmp_prod_name = #{dmpProdName},
+            </if>
+            <if test="bizNo != null">
+                biz_no = #{bizNo},
+            </if>
+            <if test="bizName != null">
+                biz_name = #{bizName},
+            </if>
+            <if test="bizType != null">
+                biz_type = #{bizType},
+            </if>
+            <if test="bizSrc != null">
+                biz_src = #{bizSrc},
+            </if>
+            <if test="bizSts != null">
+                biz_sts = #{bizSts},
+            </if>
+            <if test="nodePerson != null">
+                node_person = #{nodePerson},
+            </if>
+            <if test="priority != null">
+                priority = #{priority},
+            </if>
+            <if test="urgentLevel != null">
+                urgent_level = #{urgentLevel},
+            </if>
+            <if test="submitDate != null">
+                submit_date = #{submitDate},
+            </if>
+            <if test="dealDays != null">
+                deal_days = #{dealDays},
+            </if>
+            <if test="askEndDate != null">
+                ask_end_date = #{askEndDate},
+            </if>
+            <if test="planReleaseDate != null">
+                plan_release_date = #{planReleaseDate},
+            </if>
+            <if test="planOnlineDate != null">
+                plan_online_date = #{planOnlineDate},
+            </if>
+            <if test="dmpUpdateTime != null">
+                dmp_update_time = #{dmpUpdateTime},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        track_id = #{trackId}
+    </update>
+
+    <update id="updateReqTrackDeleteFlag">
+        update mnt_req_track
+        <set>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+          where delete_flag = '0'
+    </update>
+    
+    <select id="findByPrimaryKey" resultMap="MntReqTrackResultMap">
+        select
+        <include refid="MntReqTrackColumns" />
+        from mnt_req_track
+        where track_id = #{trackId}
+    </select>
+
+    <select id="findList" resultMap="MntReqTrackResultMap">
+        select
+        <include refid="MntReqTrackColumns" />
+        from mnt_req_track
+        <where>
+            <if test="trackId != null">
+                track_id = #{trackId}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="baseName != null and baseName != ''">
+                and base_name = #{baseName}
+            </if>
+            <if test="dmpBaseName != null and dmpBaseName != ''">
+                and dmp_base_name = #{dmpBaseName}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="prodName != null and prodName != ''">
+                and prod_name = #{prodName}
+            </if>
+            <if test="dmpProdName != null and dmpProdName != ''">
+                and dmp_prod_name = #{dmpProdName}
+            </if>
+            <if test="bizNo != null and bizNo != ''">
+                and biz_no = #{bizNo}
+            </if>
+            <if test="bizName != null and bizName != ''">
+                and biz_name = #{bizName}
+            </if>
+            <if test="bizType != null and bizType != ''">
+                and biz_type = #{bizType}
+            </if>
+            <if test="bizSrc != null and bizSrc != ''">
+                and biz_src = #{bizSrc}
+            </if>
+            <if test="bizSts != null and bizSts != ''">
+                and biz_sts = #{bizSts}
+            </if>
+            <if test="nodePerson != null and nodePerson != ''">
+                and node_person = #{nodePerson}
+            </if>
+            <if test="priority != null and priority != ''">
+                and priority = #{priority}
+            </if>
+            <if test="urgentLevel != null and urgentLevel != ''">
+                and urgent_level = #{urgentLevel}
+            </if>
+            <if test="submitDate != null">
+                and submit_date = #{submitDate}
+            </if>
+            <if test="dealDays != null">
+                and deal_days >= #{dealDays}
+            </if>
+            <if test="askEndDate != null">
+                and ask_end_date = #{askEndDate}
+            </if>
+            <if test="planReleaseDate != null">
+                and plan_release_date = #{planReleaseDate}
+            </if>
+            <if test="planOnlineDate != null">
+                and plan_online_date = #{planOnlineDate}
+            </if>
+            <if test="dmpUpdateTime != null">
+                and dmp_update_time = #{dmpUpdateTime}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntReqTrackResultMap">
+        select
+        <include refid="MntReqTrackColumns" />
+        from mnt_req_track
+    </select>
+
+    <select id="getReqSummaryStat" resultMap="MntReqTrackResultMap">
+        SELECT 
+        base_name, prod_name, biz_sts, COUNT(1) as count
+        from mnt_req_track 
+        where biz_type='客户需求' and delete_flag='0' 
+        GROUP BY base_name, prod_name, biz_sts
+    </select>
+</mapper>

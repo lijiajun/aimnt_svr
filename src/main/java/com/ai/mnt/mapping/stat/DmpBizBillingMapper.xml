@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.stat.DmpBizBillingMapper">
+
+    <resultMap id="DmpBizBillingResultMap" type="com.ai.mnt.model.stat.DmpBizBilling">
+        <result column="base_id" property="baseId" />
+        <result column="base_name" property="baseName" />
+        <result column="prod_id" property="prodId" />
+        <result column="prod_name" property="prodName" />
+        <result column="biz_no" property="bizNo" />
+        <result column="biz_name" property="bizName" />
+        <result column="biz_type" property="bizType" />
+        <result column="biz_src" property="bizSrc" />
+        <result column="biz_sts" property="bizSts" />
+        <result column="node_person" property="nodePerson" />
+        <result column="priority" property="priority" />
+        <result column="urgent_level" property="urgentLevel" />
+        <result column="submit_date" property="submitDate" />
+        <result column="deal_days" property="dealDays" />
+        <result column="ask_end_date" property="askEndDate" />
+        <result column="plan_online_date" property="planOnlineDate" />
+        <result column="plan_release_date" property="planReleaseDate" />
+        <result column="dmp_update_time" property="dmpUpdateTime" />
+    </resultMap>
+
+    <sql id="DmpBizBillingColumns">
+        base_id,
+        base_name,
+        prod_id,
+        prod_name,
+        biz_no,
+        biz_name,
+        biz_type,
+        biz_src,
+        biz_sts,
+        node_person,
+        priority,
+        urgent_level,
+        submit_date,
+        deal_days,
+        ask_end_date,
+        plan_release_date,
+        plan_online_date,
+        dmp_update_time
+    </sql>
+    
+    <select id="findByPrimaryKey" resultMap="DmpBizBillingResultMap">
+        select
+        <include refid="DmpBizBillingColumns" />
+        from mnt_install_base_info
+        where base_id = #{baseId}
+    </select>
+
+    <select id="findList" resultMap="DmpBizBillingResultMap">
+        select t8.full_name         base_name,
+               t3.product           prod_name,
+               t2.biz_no            biz_no,
+               t2.biz_name          biz_name,
+               t2.biz_type_name     biz_type,
+               t2.biz_source        biz_src,
+               t2.current_status    biz_sts,
+               t1.full_name         node_person,
+               t2.priority          priority,
+               t2.urgent_level      urgent_level,
+               t2.submit_time       submit_date,
+               round(to_number(sysdate - t2.submit_time)) as deal_days,
+               t2.ask_end_date      ask_end_date,
+               t2.ask_release_date  plan_online_date,
+               t2.plan_release_date plan_release_date,
+               t2.update_time       dmp_update_time
+          from mv_Bizbilling_biz t2,
+               mv_Bizbilling_proj t8,
+               mv_Bizbilling_emp t1,
+               (select catalog_id,
+                       parent_id,
+                       substr(sys_connect_by_path(catalog_name, '→'), 2, 1000) as product
+                  from mv_Bizbilling_product
+                 start with parent_id is null
+                connect by prior catalog_id = parent_id) t3
+         where t2.catalog_id = t3.catalog_id
+           and t3.catalog_id in(29824049,29824060,31636543, 31636548,29731958,29731974,29797601, 
+           29797604,31206758, 31206760,24920119,31636514,29731835,29797563,31197566,29824041,
+           31636540,29731955,29797598,31197608,10081562,10081583, 10081607)
+           and t1.emp_id = t2.Current_Resp
+           and current_status in ('产品部SCCB', '需求分析', '开发', '测试')
+           and t8.proj_id(+) = t2.project_name
+           and t8.full_name not in
+               ('BOSS研发自优化项目', '浙江电信OCS系统', '阿里巴巴集团项目（虚拟运营商）', '辽宁CRM项目')
+               and biz_name not like '【V%】%' 
+               and biz_name not like '[V%]%'
+                and biz_name not like '【v%】%' 
+               and biz_name not like '[v%]%'
+               and t1.full_name not like '姜伟'
+               and t1.full_name not like '胡志德'
+               and t1.full_name not like '章阳庆'
+         order by t3.product
+    </select>
+
+    <select id="findAll" resultMap="DmpBizBillingResultMap">
+        select t8.full_name         base_name,
+               t3.product           prod_name,
+               t2.biz_no            biz_no,
+               t2.biz_name          biz_name,
+               t2.biz_type_name     biz_type,
+               t2.biz_source        biz_src,
+               t2.current_status    biz_sts,
+               t1.full_name         node_person,
+               t2.priority          priority,
+               t2.urgent_level      urgent_level,
+               t2.submit_time       submit_date,
+               round(to_number(sysdate - t2.submit_time)) as deal_days,
+               t2.ask_end_date      ask_end_date,
+               t2.ask_release_date  plan_online_date,
+               t2.plan_release_date plan_release_date,
+               t2.update_time       dmp_update_time
+          from mv_Bizbilling_biz t2,
+               mv_Bizbilling_proj t8,
+               mv_Bizbilling_emp t1,
+               (select catalog_id,
+                       parent_id,
+                       substr(sys_connect_by_path(catalog_name, '→'), 2, 1000) as product
+                  from mv_Bizbilling_product
+                 start with parent_id is null
+                connect by prior catalog_id = parent_id) t3
+         where t2.catalog_id = t3.catalog_id
+           and ((t3.catalog_id in(29824049,29824060,31636543, 31636548,29731958,29731974,29797601, 
+           29797604,31206758, 31206760,24920119,31636514,29731835,29797563,31197566,29824041,
+           31636540,29731955,29797598,31197608,10081562,10081583, 10081607)
+           and current_status in ('产品部SCCB', '需求分析', '开发', '测试'))
+           or (current_status NOT LIKE '%关闭%' and current_status NOT LIKE '%验证%' 
+           and product not like '%OpenChannel%' and biz_no like 'BIZBILLING_DEFECT_%'))
+           and t1.emp_id = t2.Current_Resp
+           and t8.proj_id(+) = t2.project_name
+           and t8.full_name not in
+               ('BOSS研发自优化项目', '浙江电信OCS系统', '阿里巴巴集团项目（虚拟运营商）', '辽宁CRM项目')
+               and biz_name not like '【V%】%' 
+               and biz_name not like '[V%]%'
+                and biz_name not like '【v%】%' 
+               and biz_name not like '[v%]%'
+               and t1.full_name not like '姜伟'
+               and t1.full_name not like '胡志德'
+               and t1.full_name not like '章阳庆'
+         order by t3.product
+    </select>
+    
+    
+</mapper>

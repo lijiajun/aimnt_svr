@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.task.MntProcessTaskFactMapper">
+
+    <resultMap id="MntProcessTaskFactResultMap" type="com.ai.mnt.model.task.MntProcessTaskFact">
+        <id column="id" property="id" />
+        <result column="task_key" property="taskKey" />
+        <result column="task_sts" property="taskSts" />
+        <result column="task_date" property="taskDate" />
+        <result column="begin_time" property="beginTime" />
+        <result column="end_time" property="endTime" />
+        <result column="result" property="result" />
+        <result column="create_date" property="createDate" />
+    </resultMap>
+
+    <sql id="MntProcessTaskFactColumns">
+        id,
+        task_key,
+        task_sts,
+        task_date,
+        begin_time,
+        end_time,
+        result,
+        create_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into mnt_process_task_fact (
+        task_key,
+        task_sts,
+        task_date,
+        begin_time,
+        end_time,
+        result,
+        create_date
+        )
+        values (
+        #{taskKey},
+        #{taskSts},
+        #{taskDate},
+        #{beginTime},
+        #{endTime},
+        #{result},
+        #{createDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_process_task_fact (
+        task_key,
+        task_sts,
+        task_date,
+        begin_time,
+        end_time,
+        result,
+        create_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.taskKey},
+            #{item.taskSts},
+            #{item.taskDate},
+            #{item.beginTime},
+            #{item.endTime},
+            #{item.result},
+            #{item.createDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_process_task_fact
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_process_task_fact
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_process_task_fact
+        <set>
+            <if test="taskKey != null">
+                task_key = #{taskKey},
+            </if>
+            <if test="taskSts != null">
+                task_sts = #{taskSts},
+            </if>
+            <if test="taskDate != null">
+                task_date = #{taskDate},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntProcessTaskFactResultMap">
+        select
+        <include refid="MntProcessTaskFactColumns" />
+        from mnt_process_task_fact
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="MntProcessTaskFactResultMap">
+        select
+        <include refid="MntProcessTaskFactColumns" />
+        from mnt_process_task_fact
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="taskKey != null">
+                and task_key = #{taskKey}
+            </if>
+            <if test="taskSts != null and taskSts != ''">
+                and task_sts = #{taskSts}
+            </if>
+            <if test="taskDate != null">
+                and task_date = #{taskDate}
+            </if>
+            <if test="beginTime != null">
+                and begin_time = #{beginTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="result != null and result != ''">
+                and result = #{result}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntProcessTaskFactResultMap">
+        select
+        <include refid="MntProcessTaskFactColumns" />
+        from mnt_process_task_fact
+    </select>
+    
+</mapper>

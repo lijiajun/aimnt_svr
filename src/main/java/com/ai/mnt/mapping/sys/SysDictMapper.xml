@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.sys.SysDictMapper">
+
+    <resultMap id="SysDictResultMap" type="com.ai.mnt.model.sys.SysDict">
+        <id column="id" property="id" />
+        <result column="param_group_code" property="paramGroupCode" />
+        <result column="param_group_name" property="paramGroupName" />
+        <result column="param_code" property="paramCode" />
+        <result column="param_value" property="paramValue" />
+        <result column="param_desc" property="paramDesc" />
+        <result column="param_order" property="paramOrder" />
+        <result column="param_sts" property="paramSts" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="SysDictColumns">
+        id,
+        param_group_code,
+        param_group_name,
+        param_code,
+        param_value,
+        param_desc,
+        param_order,
+        param_sts,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_dict (
+        param_group_code,
+        param_group_name,
+        param_code,
+        param_value,
+        param_desc,
+        param_order,
+        param_sts,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{paramGroupCode},
+        #{paramGroupName},
+        #{paramCode},
+        #{paramValue},
+        #{paramDesc},
+        #{paramOrder},
+        #{paramSts},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into sys_dict (
+        param_group_code,
+        param_group_name,
+        param_code,
+        param_value,
+        param_desc,
+        param_order,
+        param_sts,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.paramGroupCode},
+            #{item.paramGroupName},
+            #{item.paramCode},
+            #{item.paramValue},
+            #{item.paramDesc},
+            #{item.paramOrder},
+            #{item.paramSts},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from sys_dict
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from sys_dict
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update sys_dict
+        <set>
+            <if test="paramGroupCode != null">
+                param_group_code = #{paramGroupCode},
+            </if>
+            <if test="paramGroupName != null">
+                param_group_name = #{paramGroupName},
+            </if>
+            <if test="paramCode != null">
+                param_code = #{paramCode},
+            </if>
+            <if test="paramValue != null">
+                param_value = #{paramValue},
+            </if>
+            <if test="paramDesc != null">
+                param_desc = #{paramDesc},
+            </if>
+            <if test="paramOrder != null">
+                param_order = #{paramOrder},
+            </if>
+            <if test="paramSts != null">
+                param_sts = #{paramSts},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="SysDictResultMap">
+        select
+        <include refid="SysDictColumns" />
+        from sys_dict
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="SysDictResultMap">
+        select
+        <include refid="SysDictColumns" />
+        from sys_dict
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="paramGroupCode != null">
+                and param_group_code = #{paramGroupCode}
+            </if>
+            <if test="paramGroupName != null">
+                and param_group_name = #{paramGroupName}
+            </if>
+            <if test="paramCode != null">
+                and param_code = #{paramCode}
+            </if>
+            <if test="paramValue != null">
+                and param_value = #{paramValue}
+            </if>
+            <if test="paramDesc != null">
+                and param_desc = #{paramDesc}
+            </if>
+            <if test="paramOrder != null">
+                and param_order = #{paramOrder}
+            </if>
+            <if test="paramSts != null">
+                and param_sts = #{paramSts}
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="SysDictResultMap">
+        select
+        <include refid="SysDictColumns" />
+        from sys_dict
+    </select>
+    
+</mapper>
