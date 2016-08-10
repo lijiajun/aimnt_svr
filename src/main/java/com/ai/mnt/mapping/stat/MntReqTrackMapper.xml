@@ -349,7 +349,7 @@
                 and urgent_level = #{urgentLevel}
             </if>
             <if test="submitDate != null">
-                and submit_date = #{submitDate}
+                and submit_date >= #{submitDate}
             </if>
             <if test="dealDays != null">
                 and deal_days >= #{dealDays}

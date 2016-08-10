@@ -50,6 +50,11 @@ public class BizDataSyncBusiness implements BaseBusiness{
     @Autowired
     MntProcessTaskFactService mntProcessTaskFactService;
     
+    @Autowired
+    BaseDataCache baseDataCache;
+    
+    private String errorMsg = "";
+    
     public void run() {
         
         MntProcessTaskFact mntProcessTaskFact = null;
@@ -59,6 +64,8 @@ public class BizDataSyncBusiness implements BaseBusiness{
         
         while(true) {
             try {
+                
+                baseDataCache.refreshCache();
                 
                 mntProcessTaskFact = new MntProcessTaskFact();
                 mntProcessTaskFact.setTaskKey(1001);
@@ -98,7 +105,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                     }else if("4".equals(mntProcessTaskFact.getTaskSts())) {
                         
                         if(errorTime == 3) {
-                            logger.info("==========本周期已经执行错误3次，等待下周期任务=======休眠1小时============");
+                            logger.info("==========本周期已经执行错误3次，等待下周期任务=======休息1小时============");
                             Thread.sleep(3600 * 1000);
                             continue;
                         }
@@ -109,7 +116,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                         
                     }else {
                         errorTime = 0;
-                        logger.info("==========当日任务已经执行完成=======休眠1小时============");
+                        logger.info("==========当日任务已经执行完成=======休息1小时============");
                         Thread.sleep(3600 * 1000);
                         continue;
                     }
@@ -124,13 +131,13 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 if(!dir.exists()) {
                     dir.mkdir();
                 }
-                exportPath += "部门需求&故障跟踪列表_" + DateUtil.getCurrDate_yyyyMMdd() + ".xls";
+                exportPath += "部门需求故障跟踪列表_" + DateUtil.getCurrDate_yyyyMMdd() + ".xls";
                 exportReqTrackExcel(exportPath);
                 
                 //发邮件
                 List<String> attachPaths = new ArrayList<>();
                 attachPaths.add(exportPath);
-                //sendEmail(attachPaths);
+                sendEmail(attachPaths);
                 
                 //任务执行成功
                 mntProcessTaskFact.setTaskSts("3");
@@ -145,8 +152,17 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 errorTime++;
                 mntProcessTaskFact.setTaskSts("4");
                 mntProcessTaskFact.setEndTime(DateUtil.getCurrDate());
-                mntProcessTaskFact.setResult("已经" + errorTime + "次执行错误！" + e.getMessage());
+                errorMsg += "已经" + errorTime + "次执行错误！" + e.getMessage();
+                mntProcessTaskFact.setResult(errorMsg);
                 mntProcessTaskFactService.updateMntProcessTaskFactById(mntProcessTaskFact);
+                try {
+                    logger.error(errorMsg);
+                    logger.error("休息5分钟！！！！！！！！！！！！！");
+                    Thread.sleep(300 * 1000);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
         }
         
@@ -282,6 +298,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 }else if(sheet.getSheetName().contains("部门故障跟踪")) {
                     mntReqTrack.setBizType("故障管理");
                     mntReqTrack.setDeleteFlag("0");
+                    mntReqTrack.setSubmitDate(DateUtil.getYearBegin(DateUtil.getCurrDate()));
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
                     wb.setSheetName(i, DateUtil.getYear(DateUtil.getCurrDate())+ "年部门故障跟踪");
                     fillDataForExcelSheet(reqTrackList, sheet);
@@ -517,7 +534,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
             mailInfo.setPassword(password);
             
             List<EnumObject> addrEnumObjects = BaseDataCache.getDataList("EMAIL_TO_ADDR_REQ_TRACK");
-            if(addrEnumObjects.size() == 0) {
+            if(addrEnumObjects == null || addrEnumObjects.size() == 0) {
                 throw new Exception("收件人[EMAIL_TO_ADDR_REQ_TRACK]未配置！");
             }
             List<String> toAddrs = new ArrayList<>();

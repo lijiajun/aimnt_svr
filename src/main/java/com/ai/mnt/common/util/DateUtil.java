@@ -162,7 +162,7 @@ public class DateUtil {
         } else if (granularity.equals("6")) {// 半年
             beginDateTemp = this.getHalfYearBegin(date);
         } else if (granularity.equals("7")) {// 年
-            beginDateTemp = this.getYearBegin(date);
+            beginDateTemp = getYearBegin(date);
         }
         beginDate = DateUtil.dateToStringShort(beginDateTemp);
         return beginDate;
@@ -760,7 +760,7 @@ public class DateUtil {
      * @param date
      * @return
      */
-    public Date getYearBegin(Date date) {
+    public static Date getYearBegin(Date date) {
         String newDateStr = FormatDate(date, "yyyy") + "-01-01";
         return stringToDateShort(newDateStr);
     }

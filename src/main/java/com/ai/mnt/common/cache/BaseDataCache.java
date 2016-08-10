@@ -118,5 +118,14 @@ public class BaseDataCache {
         GLOBAL_MAP.clear();
     }
     
+    /**
+     * 刷新缓存
+     */
+    public void refreshCache() {
+        //清空缓存
+        clearCache();
+        //刷新缓存
+        init();
+    }
     
 }
