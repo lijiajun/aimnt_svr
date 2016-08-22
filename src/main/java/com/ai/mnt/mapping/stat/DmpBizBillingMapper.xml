@@ -97,6 +97,41 @@
     </select>
 
     <select id="findAll" resultMap="DmpBizBillingResultMap">
+    select ''         base_name,
+           b.product           prod_name,
+           t2.biz_no            biz_no,
+           t2.biz_name          biz_name,
+           t2.biz_type_name     biz_type,
+           t2.biz_source        biz_src,
+           t2.current_status    biz_sts,
+           t2.submit_person     node_person,
+           t2.priority          priority,
+           t2.severity_degree      urgent_level,
+           t2.submit_time       submit_date,
+           round(to_number(sysdate - t2.submit_time)) as deal_days,
+           t2.ask_end_date      ask_end_date,
+           t2.ask_release_date  plan_online_date,
+           t2.plan_release_date plan_release_date,
+           t2.update_time       dmp_update_time
+          from mv_bizbilling_biz t2,
+               (select catalog_id,
+                       parent_id,
+                       substr(sys_connect_by_path(catalog_name, '→'), 2, 1000) as product
+                  from mv_Bizbilling_product
+                 start with parent_id is null
+                connect by prior catalog_id = parent_id) b
+         where t2.biz_type_name = '测试缺陷'
+           and t2.catalog_id = b.catalog_id
+           and (b.product like 'BIZ_BILLING→OpenBilling%' or
+               b.product like 'BIZ_BILLING→综合帐务管理系统%' or
+               b.product like 'BIZ_BILLING→帐务处理%' or
+               b.catalog_id in (29824041, 31636540, 29731955, 29797598, 31197608,
+                30595445, 31761038, 31764903, 31764532, 29824049,
+                29824060, 31636543, 31636548, 29731958, 29731974,
+                29797601, 29797604, 31206758, 31206760))
+           and b.product not like '%广电%'
+           and current_status not LIKE  '%关闭%'
+           UNION
         select t8.full_name         base_name,
                t3.product           prod_name,
                t2.biz_no            biz_no,
@@ -140,7 +175,6 @@
                and t1.full_name not like '姜伟'
                and t1.full_name not like '胡志德'
                and t1.full_name not like '章阳庆'
-         order by t3.product
     </select>
     
     

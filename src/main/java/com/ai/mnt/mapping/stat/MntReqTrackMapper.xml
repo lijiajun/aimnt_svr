@@ -382,6 +382,7 @@
                 and modify_date = #{modifyDate}
             </if>
         </where>
+        order by prod_name asc, deal_days asc
     </select>
 
     <select id="findAll" resultMap="MntReqTrackResultMap">

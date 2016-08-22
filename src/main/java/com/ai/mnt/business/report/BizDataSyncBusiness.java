@@ -65,6 +65,8 @@ public class BizDataSyncBusiness implements BaseBusiness{
         while(true) {
             try {
                 
+                boolean isCheckDate = true;
+                
                 baseDataCache.refreshCache();
                 
                 mntProcessTaskFact = new MntProcessTaskFact();
@@ -101,6 +103,9 @@ public class BizDataSyncBusiness implements BaseBusiness{
                         mntProcessTaskFact.setTaskSts("2");
                         mntProcessTaskFact.setBeginTime(currentDate);
                         mntProcessTaskFactService.updateMntProcessTaskFactById(mntProcessTaskFact);
+                        
+                        isCheckDate = false;
+                        
                     //失败状态重复调用3次
                     }else if("4".equals(mntProcessTaskFact.getTaskSts())) {
                         
@@ -123,7 +128,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 }
                 
                 //MNT_REQ_TRACK数据同步
-                bizDataSync();
+                bizDataSync(isCheckDate);
                 
                 //导出excel
                 String exportPath = BaseDataCache.getDataName("FILE_PATH", "req_track_excel_path");
@@ -137,7 +142,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 //发邮件
                 List<String> attachPaths = new ArrayList<>();
                 attachPaths.add(exportPath);
-                sendEmail(attachPaths);
+                //sendEmail(attachPaths);
                 
                 //任务执行成功
                 mntProcessTaskFact.setTaskSts("3");
@@ -173,7 +178,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
      * 数据同步
      * @throws Exception 
      */
-    public void bizDataSync() throws Exception {
+    public void bizDataSync(boolean isCheckDate) throws Exception {
        
         try {
             //DmpBizBillingService dmpBizbllingService = ctx.getBean(DmpBizBillingService.class);
@@ -190,13 +195,15 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 
                 MntReqTrack mntReqTrack = new MntReqTrack();
                 mntReqTrack.setDmpUpdateTime(bizBilling.getDmpUpdateTime());
-                
+                mntReqTrack.setDeleteFlag("0");
                 List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
-                if(reqTrackList != null && reqTrackList.size() > 0) {
+                if(reqTrackList != null && reqTrackList.size() > 0 && isCheckDate) {
                     String msg = "===========该时间" + DateUtil.dateToString(bizBilling.getDmpUpdateTime()) + " DMP数据已经存在，不用再同步！===============";
                     logger.info(msg);
                     throw new Exception(msg);
                 }
+            }else {
+                throw new Exception("===========未获取到DMP数据===============");
             }
             
             List<MntReqTrack> mntReqTracks = new ArrayList<MntReqTrack>();
@@ -243,7 +250,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
         }else if(prodName.contains("VerisBilling_CMC") && (prodName.contains("帐务") || prodName.contains("账务"))) {
             prodName = "VB60帐务处理";
         }else if(prodName.contains("VerisBilling_CMC") && prodName.contains("ABM余额管理")) {
-            prodName = "VB60计费系统";
+            prodName = "VB60帐务处理";
         }else if(prodName.contains("BIZ_BILLING") && prodName.contains("帐务处理")) {
             prodName = "帐处";
         }else if(prodName.contains("综合帐务管理系统")) {
@@ -303,7 +310,6 @@ public class BizDataSyncBusiness implements BaseBusiness{
                     wb.setSheetName(i, DateUtil.getYear(DateUtil.getCurrDate())+ "年部门故障跟踪");
                     fillDataForExcelSheet(reqTrackList, sheet);
                 }else if(sheet.getSheetName().contains("汇总结果")) {
-                    
                     List<MntReqTrack> summaryStat = mntReqTrackService.getReqSummaryStat();
                     Map<String, List<ReqSummaryStat>> statMap = new HashMap<>();
                     buildSummaryData(statMap, summaryStat);
@@ -314,6 +320,12 @@ public class BizDataSyncBusiness implements BaseBusiness{
                     mntReqTrack.setDealDays(120); //>=120天
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
                     fillDataForExcelSheet(reqTrackList, sheet);
+                }else if(sheet.getSheetName().contains("部门未完成BUG跟踪列表")) {
+                    mntReqTrack.setBizType("测试缺陷");
+                    mntReqTrack.setDeleteFlag("0");
+                    mntReqTrack.setSubmitDate(DateUtil.getYearBegin(DateUtil.getCurrDate()));
+                    List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
+                    fillDataForBugExcelSheet(reqTrackList, sheet);
                 }else {
                     continue;
                 }
@@ -476,6 +488,30 @@ public class BizDataSyncBusiness implements BaseBusiness{
     }
     
     /**
+     * excel填充数据BUG
+     * @param mntReqTracks
+     * @param sheet
+     */
+    private void fillDataForBugExcelSheet(List<MntReqTrack> mntReqTracks, Sheet sheet) {
+        if(mntReqTracks == null || mntReqTracks.size() == 0) {
+            return;
+        }
+        for(int i=0, len=mntReqTracks.size(); i<len; i++) {
+            MntReqTrack mntReqTrack = mntReqTracks.get(i);
+            Row row = sheet.createRow(i + 1);
+            row.createCell(0).setCellValue(mntReqTrack.getProdName());
+            row.createCell(1).setCellValue(mntReqTrack.getBizNo());
+            row.createCell(2).setCellValue(mntReqTrack.getBizName());
+            row.createCell(3).setCellValue(mntReqTrack.getBizSts());
+            row.createCell(4).setCellValue(DateUtil.dateToStringShort(mntReqTrack.getSubmitDate()));
+            row.createCell(5).setCellValue(mntReqTrack.getDealDays());
+            row.createCell(6).setCellValue(mntReqTrack.getNodePerson());
+            row.createCell(7).setCellValue(mntReqTrack.getBizSrc());
+            row.createCell(8).setCellValue(mntReqTrack.getUrgentLevel());
+        }
+    }
+    
+    /**
      * excel填充数据
      * @param mntReqTracks
      * @param sheet
@@ -498,7 +534,6 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 row.createCell(7).setCellValue(DateUtil.dateToStringShort(mntReqTrack.getSubmitDate()));
                 row.createCell(8).setCellValue(mntReqTrack.getDealDays());
                 row.createCell(9).setCellValue(DateUtil.dateToStringShort(mntReqTrack.getAskEndDate()));
-                
             }else {
                 row.createCell(7).setCellValue(mntReqTrack.getPriority());
                 row.createCell(8).setCellValue(DateUtil.dateToStringShort(mntReqTrack.getSubmitDate()));
@@ -564,7 +599,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
             }
             
             
-            String subject = "部门需求&故障跟踪列表_" + DateUtil.getCurrDate_yyyyMMdd();
+            String subject = "部门需求故障跟踪列表_" + DateUtil.getCurrDate_yyyyMMdd();
             mailInfo.setSubject(subject);
             mailInfo.setSubType("mixed");
             
