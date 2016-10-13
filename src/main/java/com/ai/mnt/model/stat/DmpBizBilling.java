@@ -45,6 +45,9 @@ public class DmpBizBilling implements Serializable{
 
     /**节点责任人*/
     private String nodePerson;
+    
+    /**提交人*/
+    private String submitPerson;
 
     /**优先级*/
     private String priority;
@@ -276,6 +279,14 @@ public class DmpBizBilling implements Serializable{
 
     public void setDmpUpdateTime(Date dmpUpdateTime) {
         this.dmpUpdateTime = dmpUpdateTime;
+    }
+
+    public String getSubmitPerson() {
+        return submitPerson;
+    }
+
+    public void setSubmitPerson(String submitPerson) {
+        this.submitPerson = submitPerson;
     }
 
 

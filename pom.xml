@@ -49,6 +49,8 @@
             <groupId>com.oracle</groupId>
             <artifactId>oracle6</artifactId>
             <version>11.2.0.1.0</version>
+            <scope>system</scope>
+            <systemPath>E:\zl\jar_maven\com\oracle\oracle6\11.2.0.1.0\oracle6-11.2.0.1.0.jar</systemPath>
         </dependency>
         <!-- Database Pool -->
         <dependency>

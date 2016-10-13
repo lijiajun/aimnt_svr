@@ -15,6 +15,7 @@
         <result column="biz_type" property="bizType" />
         <result column="biz_src" property="bizSrc" />
         <result column="biz_sts" property="bizSts" />
+        <result column="submit_person" property="submitPerson" />
         <result column="node_person" property="nodePerson" />
         <result column="priority" property="priority" />
         <result column="urgent_level" property="urgentLevel" />
@@ -45,6 +46,7 @@
         biz_type,
         biz_src,
         biz_sts,
+        submit_person,
         node_person,
         priority,
         urgent_level,
@@ -74,6 +76,7 @@
         biz_type,
         biz_src,
         biz_sts,
+        submit_person,
         node_person,
         priority,
         urgent_level,
@@ -101,6 +104,7 @@
         #{bizType},
         #{bizSrc},
         #{bizSts},
+        #{submitPerson},
         #{nodePerson},
         #{priority},
         #{urgentLevel},
@@ -131,6 +135,7 @@
         biz_type,
         biz_src,
         biz_sts,
+        submit_person,
         node_person,
         priority,
         urgent_level,
@@ -160,6 +165,7 @@
             #{item.bizType},
             #{item.bizSrc},
             #{item.bizSts},
+            #{item.submitPerson},
             #{item.nodePerson},
             #{item.priority},
             #{item.urgentLevel},
@@ -227,6 +233,9 @@
             </if>
             <if test="bizSts != null">
                 biz_sts = #{bizSts},
+            </if>
+            <if test="submitPerson != null">
+                submit_person = #{submitPerson},
             </if>
             <if test="nodePerson != null">
                 node_person = #{nodePerson},
@@ -338,6 +347,9 @@
             </if>
             <if test="bizSts != null and bizSts != ''">
                 and biz_sts = #{bizSts}
+            </if>
+            <if test="submitPerson != null and submitPerson != ''">
+                and submit_person = #{submitPerson}
             </if>
             <if test="nodePerson != null and nodePerson != ''">
                 and node_person = #{nodePerson}

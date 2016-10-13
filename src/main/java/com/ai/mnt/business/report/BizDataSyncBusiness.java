@@ -25,6 +25,7 @@ import com.ai.mnt.common.util.DateUtil;
 import com.ai.mnt.common.util.EmailUtil;
 import com.ai.mnt.common.util.ExcelUtil;
 import com.ai.mnt.model.common.EnumObject;
+import com.ai.mnt.model.inst.MntProdBaseRel;
 import com.ai.mnt.model.stat.DmpBizBilling;
 import com.ai.mnt.model.stat.EmailAttachment;
 import com.ai.mnt.model.stat.EmailInfo;
@@ -32,6 +33,7 @@ import com.ai.mnt.model.stat.MntReqTrack;
 import com.ai.mnt.model.stat.ReqSummaryStat;
 import com.ai.mnt.model.task.MntProcessTaskFact;
 import com.ai.mnt.persistence.base.MultipleDataSource;
+import com.ai.mnt.service.inst.MntProdBaseRelService;
 import com.ai.mnt.service.stat.DmpBizBillingService;
 import com.ai.mnt.service.stat.MntReqTrackService;
 import com.ai.mnt.service.task.MntProcessTaskFactService;
@@ -52,6 +54,9 @@ public class BizDataSyncBusiness implements BaseBusiness{
     
     @Autowired
     BaseDataCache baseDataCache;
+    
+    @Autowired
+    MntProdBaseRelService mntProdBaseRelService;
     
     private String errorMsg = "";
     
@@ -142,7 +147,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 //发邮件
                 List<String> attachPaths = new ArrayList<>();
                 attachPaths.add(exportPath);
-                //sendEmail(attachPaths);
+                sendEmail(attachPaths);
                 
                 //任务执行成功
                 mntProcessTaskFact.setTaskSts("3");
@@ -153,20 +158,21 @@ public class BizDataSyncBusiness implements BaseBusiness{
             }catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
-                //任务执行失败
-                errorTime++;
-                mntProcessTaskFact.setTaskSts("4");
-                mntProcessTaskFact.setEndTime(DateUtil.getCurrDate());
-                errorMsg += "已经" + errorTime + "次执行错误！" + e.getMessage();
-                mntProcessTaskFact.setResult(errorMsg);
-                mntProcessTaskFactService.updateMntProcessTaskFactById(mntProcessTaskFact);
                 try {
+                    //任务执行失败
+                    errorTime++;
+                    mntProcessTaskFact.setTaskSts("4");
+                    mntProcessTaskFact.setEndTime(DateUtil.getCurrDate());
+                    errorMsg += "已经" + errorTime + "次执行错误！" + e.getMessage();
+                    mntProcessTaskFact.setResult(errorMsg);
+                    MultipleDataSource.setDataSourceKey("mntDataSource");
+                    mntProcessTaskFactService.updateMntProcessTaskFactById(mntProcessTaskFact);
                     logger.error(errorMsg);
                     logger.error("休息5分钟！！！！！！！！！！！！！");
                     Thread.sleep(300 * 1000);
-                } catch (InterruptedException e1) {
-                    // TODO Auto-generated catch block
+                } catch (Exception e1) {
                     e1.printStackTrace();
+                    logger.error(e1.getMessage());
                 }
             }
         }
@@ -237,27 +243,34 @@ public class BizDataSyncBusiness implements BaseBusiness{
     
     private void copyDmpBiz2MntReqTrack(DmpBizBilling bizBilling, MntReqTrack mntReqTrack) {
         
-        
         String baseName = BaseDataCache.getDataName("PRJERCT_TO_BASENAME", bizBilling.getBaseName());
         baseName = ("".equals(baseName) || baseName == null) ? bizBilling.getBaseName() : baseName;
         mntReqTrack.setBaseName(baseName);
         
         String prodName = bizBilling.getProdName();
+        int prodId = -1;
         if(prodName.contains("OpenBilling")) {
             prodName = "OpenBilling";
+            prodId = 3;
         }else if(prodName.contains("VerisBilling_CMC") && prodName.contains("计费")) {
             prodName = "VB60计费系统";
+            prodId = 3;
         }else if(prodName.contains("VerisBilling_CMC") && (prodName.contains("帐务") || prodName.contains("账务"))) {
             prodName = "VB60帐务处理";
+            prodId = 2;
         }else if(prodName.contains("VerisBilling_CMC") && prodName.contains("ABM余额管理")) {
             prodName = "VB60帐务处理";
+            prodId = 2;
         }else if(prodName.contains("BIZ_BILLING") && prodName.contains("帐务处理")) {
             prodName = "帐处";
+            prodId = 2;
         }else if(prodName.contains("综合帐务管理系统")) {
             prodName = "帐管";
+            prodId = 1;
         }else if(prodName.contains("VerisBilling_CMC") && prodName.contains("西藏BOSS")) {
             prodName = "其他";
         }
+        mntReqTrack.setProdId(prodId);
         mntReqTrack.setProdName(prodName);
         mntReqTrack.setDmpBaseName(bizBilling.getBaseName());
         mntReqTrack.setDmpProdName(bizBilling.getProdName());
@@ -266,6 +279,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
         mntReqTrack.setBizType(bizBilling.getBizType());
         mntReqTrack.setBizSrc(bizBilling.getBizSrc());
         mntReqTrack.setBizSts(bizBilling.getBizSts());
+        mntReqTrack.setSubmitPerson(bizBilling.getSubmitPerson());
         mntReqTrack.setNodePerson(bizBilling.getNodePerson());
         mntReqTrack.setPriority(bizBilling.getPriority());
         mntReqTrack.setUrgentLevel(bizBilling.getUrgentLevel());
@@ -287,7 +301,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
         Workbook wb = null;
         FileOutputStream fos = null;
         try {
-            String filePath = "template/req_track_templet_v1.xls";
+            String filePath = "template/req_track_templet_v2.xls";
             String fullFilePath = this.getClass().getClassLoader().getResource(filePath).getPath();
             wb = ExcelUtil.getWorkBook(fullFilePath);
             int number = wb.getNumberOfSheets();
@@ -297,11 +311,29 @@ public class BizDataSyncBusiness implements BaseBusiness{
             MntReqTrack mntReqTrack = new MntReqTrack();
             for(int i=0; i<number; i++) {
                 Sheet sheet = wb.getSheetAt(i);
-                if(sheet.getSheetName().contains("部门未完成需求跟踪列表")) {
+                if(sheet.getSheetName().contains("部门未完成需求跟踪")) {
                     mntReqTrack.setBizType("客户需求");
                     mntReqTrack.setDeleteFlag("0");
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
                     fillDataForExcelSheet(reqTrackList, sheet);
+                }if(sheet.getSheetName().contains("本部门需求跟踪")) {
+                    mntReqTrack.setBizType("客户需求");
+                    mntReqTrack.setDeleteFlag("0");
+                    List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
+                    //过滤本部门的需求
+                    List<MntReqTrack> reqTrackListTemp = new ArrayList<>();
+                    if(reqTrackList !=null && reqTrackList.size() > 0) {
+                        List<MntProdBaseRel> relList = mntProdBaseRelService.findProdJoinBaseInfoList();
+                        for(MntReqTrack mntReqTrackTemp : reqTrackList) {
+                            for(MntProdBaseRel mntProdBaseRel : relList) {
+                                if(mntReqTrackTemp.getProdId() == mntProdBaseRel.getProdId()
+                                        && mntProdBaseRel.getMntInstallBaseInfo().getBaseName().equals(mntReqTrackTemp.getBaseName())) {
+                                    reqTrackListTemp.add(mntReqTrackTemp);
+                                }
+                            }
+                        }
+                    }
+                    fillDataForExcelSheet(reqTrackListTemp, sheet);
                 }else if(sheet.getSheetName().contains("部门故障跟踪")) {
                     mntReqTrack.setBizType("故障管理");
                     mntReqTrack.setDeleteFlag("0");
@@ -505,9 +537,10 @@ public class BizDataSyncBusiness implements BaseBusiness{
             row.createCell(3).setCellValue(mntReqTrack.getBizSts());
             row.createCell(4).setCellValue(DateUtil.dateToStringShort(mntReqTrack.getSubmitDate()));
             row.createCell(5).setCellValue(mntReqTrack.getDealDays());
-            row.createCell(6).setCellValue(mntReqTrack.getNodePerson());
-            row.createCell(7).setCellValue(mntReqTrack.getBizSrc());
-            row.createCell(8).setCellValue(mntReqTrack.getUrgentLevel());
+            row.createCell(6).setCellValue(mntReqTrack.getSubmitPerson());
+            row.createCell(7).setCellValue(mntReqTrack.getNodePerson());
+            row.createCell(8).setCellValue(mntReqTrack.getBizSrc());
+            row.createCell(9).setCellValue(mntReqTrack.getUrgentLevel());
         }
     }
     

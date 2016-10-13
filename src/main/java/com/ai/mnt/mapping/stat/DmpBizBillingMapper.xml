@@ -12,6 +12,7 @@
         <result column="biz_type" property="bizType" />
         <result column="biz_src" property="bizSrc" />
         <result column="biz_sts" property="bizSts" />
+        <result column="submit_person" property="submitPerson" />
         <result column="node_person" property="nodePerson" />
         <result column="priority" property="priority" />
         <result column="urgent_level" property="urgentLevel" />
@@ -104,7 +105,8 @@
            t2.biz_type_name     biz_type,
            t2.biz_source        biz_src,
            t2.current_status    biz_sts,
-           t2.submit_person     node_person,
+           t2.submit_person     submit_person,
+           t1.full_name         node_person,
            t2.priority          priority,
            t2.severity_degree      urgent_level,
            t2.submit_time       submit_date,
@@ -114,6 +116,7 @@
            t2.plan_release_date plan_release_date,
            t2.update_time       dmp_update_time
           from mv_bizbilling_biz t2,
+               mv_Bizbilling_emp t1,
                (select catalog_id,
                        parent_id,
                        substr(sys_connect_by_path(catalog_name, '→'), 2, 1000) as product
@@ -121,7 +124,9 @@
                  start with parent_id is null
                 connect by prior catalog_id = parent_id) b
          where t2.biz_type_name = '测试缺陷'
+           and t2.biz_name not like '%广电%'
            and t2.catalog_id = b.catalog_id
+           and t1.emp_id = t2.Current_Resp
            and (b.product like 'BIZ_BILLING→OpenBilling%' or
                b.product like 'BIZ_BILLING→综合帐务管理系统%' or
                b.product like 'BIZ_BILLING→帐务处理%' or
@@ -139,6 +144,7 @@
                t2.biz_type_name     biz_type,
                t2.biz_source        biz_src,
                t2.current_status    biz_sts,
+               t2.submit_person     submit_person,
                t1.full_name         node_person,
                t2.priority          priority,
                t2.urgent_level      urgent_level,

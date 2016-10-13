@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.inst.MntProdBaseRelMapper">
+
+    <resultMap id="MntProdBaseRelResultMap" type="com.ai.mnt.model.inst.MntProdBaseRel">
+        <id column="id" property="id" />
+        <result column="prod_id" property="prodId" />
+        <result column="base_id" property="baseId" />
+        <association property="mntInstallBaseInfo" javaType="com.ai.mnt.model.inst.MntInstallBaseInfo" resultMap="MntInstallBaseInfoResultMap"/>
+    </resultMap>
+
+    <resultMap id="MntInstallBaseInfoResultMap" type="com.ai.mnt.model.inst.MntInstallBaseInfo">
+        <id column="base_id" property="baseId" />
+        <result column="base_name" property="baseName" />
+        <result column="bu_id" property="buId" />
+        <result column="base_desc" property="baseDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntProdBaseRelColumns">
+        id,
+        prod_id,
+        base_id
+    </sql>
+
+    <sql id="MntProdBaseRelColumns2">
+        id,
+        prod_id,
+        t1.base_id
+    </sql>
+    
+    <sql id="MntInstallBaseInfoColumns">
+        t2.base_id,
+        t2.base_name,
+        t2.bu_id,
+        t2.base_desc,
+        t2.delete_flag,
+        t2.creator,
+        t2.create_date,
+        t2.modifier,
+        t2.modify_date
+    </sql>
+    
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into mnt_prod_base_rel (
+        prod_id,
+        base_id
+        )
+        values (
+        #{prodId},
+        #{baseId}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_prod_base_rel (
+        prod_id,
+        base_id
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.prodId},
+            #{item.baseId}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_prod_base_rel
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_prod_base_rel
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_prod_base_rel
+        <set>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntProdBaseRelResultMap">
+        select
+        <include refid="MntProdBaseRelColumns" />
+        from mnt_prod_base_rel
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="MntProdBaseRelResultMap">
+        select
+        <include refid="MntProdBaseRelColumns" />
+        from mnt_prod_base_rel
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntProdBaseRelResultMap">
+        select
+        <include refid="MntProdBaseRelColumns" />
+        from mnt_prod_base_rel
+    </select>
+    
+    
+    <select id="findProdJoinBaseInfoList" resultMap="MntProdBaseRelResultMap">
+        select
+        <include refid="MntProdBaseRelColumns2" />,
+        <include refid="MntInstallBaseInfoColumns" />
+        from mnt_prod_base_rel t1 join mnt_install_base_info t2 
+        on t1.base_id = t2.base_id and t2.delete_flag = '0'
+    </select>
+    
+</mapper>

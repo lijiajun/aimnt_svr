@@ -49,6 +49,9 @@ public class MntReqTrack implements Serializable {
     /** 需求当前状态 */
     private String bizSts;
 
+    /**提交人*/
+    private String submitPerson;
+    
     /** 节点责任人 */
     private String nodePerson;
 
@@ -308,6 +311,14 @@ public class MntReqTrack implements Serializable {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String getSubmitPerson() {
+        return submitPerson;
+    }
+
+    public void setSubmitPerson(String submitPerson) {
+        this.submitPerson = submitPerson;
     }
 
     @Override
