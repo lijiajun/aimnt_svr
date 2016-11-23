@@ -187,9 +187,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
+<!--                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
