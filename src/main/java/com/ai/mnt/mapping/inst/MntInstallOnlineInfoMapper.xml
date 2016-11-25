@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.inst.MntInstallOnlineInfoMapper">
+
+    <resultMap id="MntInstallOnlineInfoResultMap" type="com.ai.mnt.model.inst.MntInstallOnlineInfo">
+        <id column="online_id" property="onlineId" />
+        <result column="base_id" property="baseId" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="rel_id" property="relId" />
+        <result column="rel_dtl_id" property="relDtlId" />
+        <result column="module_id" property="moduleId" />
+        <result column="is_onsite_support" property="isOnsiteSupport" />
+        <result column="is_remote_support" property="isRemoteSupport" />
+        <result column="plan_online_date" property="planOnlineDate" />
+        <result column="online_date" property="onlineDate" />
+        <result column="is_fault" property="isFault" />
+        <result column="is_onlined" property="isOnlined" />
+        <result column="un_online_reason" property="unOnlineReason" />
+        <result column="delay_online_date" property="delayOnlineDate" />
+        <result column="online_remark" property="onlineRemark" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <resultMap id="MntInstallOnlineInfoResultMap2" type="com.ai.mnt.model.inst.MntInstallOnlineInfo">
+        <id column="online_id" property="onlineId" />
+        <result column="base_id" property="baseId" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="rel_id" property="relId" />
+        <result column="rel_dtl_id" property="relDtlId" />
+        <result column="module_id" property="moduleId" />
+        <result column="is_onsite_support" property="isOnsiteSupport" />
+        <result column="is_remote_support" property="isRemoteSupport" />
+        <result column="plan_online_date" property="planOnlineDate" />
+        <result column="online_date" property="onlineDate" />
+        <result column="is_fault" property="isFault" />
+        <result column="is_onlined" property="isOnlined" />
+        <result column="un_online_reason" property="unOnlineReason" />
+        <result column="delay_online_date" property="delayOnlineDate" />
+        <result column="online_remark" property="onlineRemark" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+        <association property="mntReleaseRecDtl" javaType="com.ai.mnt.model.product.MntReleaseRecDtl" resultMap="MntReleaseRecDtlResultMap"/>
+    </resultMap>
+    
+    <resultMap id="MntReleaseRecDtlResultMap" type="com.ai.mnt.model.product.MntReleaseRecDtl">
+        <id column="dtl_id" property="dtlId" />
+        <result column="rel_id" property="relId" />
+        <result column="dtl_type" property="dtlType" />
+        <result column="dtl_code" property="dtlCode" />
+        <result column="dtl_name" property="dtlName" />
+        <result column="dtl_desc" property="dtlDesc" />
+    </resultMap>
+    
+    <sql id="MntInstallOnlineInfoColumns">
+        online_id,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_id,
+        rel_dtl_id,
+        module_id,
+        is_onsite_support,
+        is_remote_support,
+        plan_online_date,
+        online_date,
+        is_fault,
+        is_onlined,
+        un_online_reason,
+        delay_online_date,
+        online_remark,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="onlineId">
+        insert into mnt_install_online_info (
+        base_id,
+        prod_id,
+        ver_code,
+        rel_id,
+        rel_dtl_id,
+        module_id,
+        is_onsite_support,
+        is_remote_support,
+        plan_online_date,
+        online_date,
+        is_fault,
+        is_onlined,
+        un_online_reason,
+        delay_online_date,
+        online_remark,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{baseId},
+        #{prodId},
+        #{verCode},
+        #{relId},
+        #{relDtlId},
+        #{moduleId},
+        #{isOnsiteSupport},
+        #{isRemoteSupport},
+        #{planOnlineDate},
+        #{onlineDate},
+        #{isFault},
+        #{isOnlined},
+        #{unOnlineReason},
+        #{delayOnlineDate},
+        #{onlineRemark},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_install_online_info (
+        base_id,
+        prod_id,
+        ver_code,
+        rel_id,
+        rel_dtl_id,
+        module_id,
+        is_onsite_support,
+        is_remote_support,
+        plan_online_date,
+        online_date,
+        is_fault,
+        is_onlined,
+        un_online_reason,
+        delay_online_date,
+        online_remark,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.baseId},
+            #{item.prodId},
+            #{item.verCode},
+            #{item.relId},
+            #{item.relDtlId},
+            #{item.moduleId},
+            #{item.isOnsiteSupport},
+            #{item.isRemoteSupport},
+            #{item.planOnlineDate},
+            #{item.onlineDate},
+            #{item.isFault},
+            #{item.isOnlined},
+            #{item.unOnlineReason},
+            #{item.delayOnlineDate},
+            #{item.onlineRemark},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_install_online_info
+        where
+        online_id = #{onlineId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_install_online_info
+        where online_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateRelIdByDtlId">
+    	update mnt_install_online_info
+    	set rel_id = #{relId}
+    	where online_id = #{onlineId}
+    </update>
+
+    <update id="updateByPrimaryKey">
+        update mnt_install_online_info
+        <set>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="relId != null">
+                rel_id = #{relId},
+            </if>
+            <if test="relDtlId != null">
+                rel_dtl_id = #{relDtlId},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId},
+            </if>
+            <if test="isOnsiteSupport != null">
+                is_onsite_support = #{isOnsiteSupport},
+            </if>
+            <if test="isRemoteSupport != null">
+                is_remote_support = #{isRemoteSupport},
+            </if>
+            <if test="planOnlineDate != null">
+                plan_online_date = #{planOnlineDate},
+            </if>
+            <if test="onlineDate != null">
+                online_date = #{onlineDate},
+            </if>
+            <if test="isFault != null">
+                is_fault = #{isFault},
+            </if>
+            <if test="isOnlined != null">
+                is_onlined = #{isOnlined},
+            </if>
+            <if test="unOnlineReason != null">
+                un_online_reason = #{unOnlineReason},
+            </if>
+            <if test="delayOnlineDate != null">
+                delay_online_date = #{delayOnlineDate},
+            </if>
+            <if test="onlineRemark != null">
+                online_remark = #{onlineRemark},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        online_id = #{onlineId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntInstallOnlineInfoResultMap">
+        select
+        <include refid="MntInstallOnlineInfoColumns" />
+        from mnt_install_online_info
+        where online_id = #{onlineId}
+    </select>
+
+    <select id="findList" resultMap="MntInstallOnlineInfoResultMap">
+        select
+        <include refid="MntInstallOnlineInfoColumns" />
+        from mnt_install_online_info
+        <where>
+            <if test="onlineId != null">
+                online_id = #{onlineId}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and ver_code = #{verCode}
+            </if>
+            <if test="relId != null and relId != ''">
+                and rel_id = #{relId}
+            </if>
+            <if test="relDtlId != null">
+                and rel_dtl_id = #{relDtlId}
+            </if>
+            <if test="moduleId != null">
+                and module_id = #{moduleId}
+            </if>
+            <if test="isOnsiteSupport != null and isOnsiteSupport != ''">
+                and is_onsite_support = #{isOnsiteSupport}
+            </if>
+            <if test="isRemoteSupport != null and isRemoteSupport != ''">
+                and is_remote_support = #{isRemoteSupport}
+            </if>
+            <if test="planOnlineDate != null">
+                and plan_online_date = #{planOnlineDate}
+            </if>
+            <if test="onlineDate != null">
+                and online_date = #{onlineDate}
+            </if>
+            <if test="isFault != null and isFault != ''">
+                is_fault = #{isFault}
+            </if>
+            <if test="isOnlined != null and isOnlined != ''">
+                and is_onlined = #{isOnlined}
+            </if>
+            <if test="unOnlineReason != null and unOnlineReason != ''">
+                and un_online_reason = #{unOnlineReason}
+            </if>
+            <if test="delayOnlineDate != null">
+                and delay_online_date = #{delayOnlineDate}
+            </if>
+            <if test="onlineRemark != null and onlineRemark != ''">
+                and online_remark = #{onlineRemark}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntInstallOnlineInfoResultMap">
+        select
+        <include refid="MntInstallOnlineInfoColumns" />
+        from mnt_install_online_info
+    </select>
+    
+    
+    <select id="getDistinctOnlineDateList" resultMap="MntInstallOnlineInfoResultMap">
+        SELECT 
+            DISTINCT
+            CASE 
+            WHEN online_date IS NOT NULL
+            THEN online_date
+            WHEN delay_online_date IS NOT NULL
+            THEN delay_online_date
+            WHEN plan_online_date IS NOT NULL
+            THEN plan_online_date
+            END online_date
+        from mnt_install_online_info
+        <where>
+            <if test="beginDate != null and endDate != null">
+                <![CDATA[and ((plan_online_date >= #{beginDate} and plan_online_date <= #{endDate}) 
+                or (online_date >= #{beginDate} and online_date <= #{endDate})
+                or (delay_online_date >= #{beginDate} and delay_online_date <= #{endDate}))
+                ]]>
+            </if>
+        </where>
+    </select>
+    
+    
+    <sql id="MntInstallOnlineInfoJoinRelDtl">
+        online_id,
+        t1.base_id,
+        t1.prod_id,
+        t1.ver_code,
+        t1.rel_id,
+        t1.rel_dtl_id,
+        t1.module_id,
+        is_onsite_support,
+        is_remote_support,
+        plan_online_date,
+        online_date,
+        is_fault,
+        is_onlined,
+        un_online_reason,
+        delay_online_date,
+        online_remark,
+        t1.delete_flag,
+        t1.creator,
+        t1.create_date,
+        t1.modifier,
+        t1.modify_date
+    </sql>
+    
+    <select id="findOnlineInfoListJoinRelDtl" resultMap="MntInstallOnlineInfoResultMap2">
+        select
+        <include refid="MntInstallOnlineInfoJoinRelDtl" />,
+        dtl_code,
+        dtl_name,
+        dtl_desc
+        from 
+        mnt_install_online_info t1 join mnt_release_rec_dtl t2
+        on t1.rel_dtl_id = t2.dtl_id
+        join mnt_release_rec t3 on t2.rel_id = t3.rel_id
+        <where>
+            <if test="onlineId != null">
+                and online_id = #{onlineId}
+            </if>
+            <if test="baseId != null">
+                and t1.base_id = #{baseId}
+            </if>
+            <if test="prodId != null">
+                and t1.prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and t1.ver_code = #{verCode}
+            </if>
+            <if test="relId != null and relId != ''">
+                and t1.rel_id = #{relId}
+            </if>
+            <if test="relCode != null and relCode != ''">
+                and t3.rel_code like '%${relCode}%'
+            </if>
+            <if test="mntReleaseRecDtl.dtlCode != null and mntReleaseRecDtl.dtlCode != ''">
+                and t2.dtl_code like '%${mntReleaseRecDtl.dtlCode}%'
+            </if>
+            <if test="planOnlineDate != null">
+                and plan_online_date = #{planOnlineDate}
+            </if>
+            <if test="onlineDate != null">
+                and (plan_online_date = #{onlineDate} or online_date = #{onlineDate} or delay_online_date = #{onlineDate})
+            </if>
+            <if test="isFault != null and isFault != ''">
+                and is_fault = #{isFault}
+            </if>
+            <if test="isOnlined != null and isOnlined != ''">
+                and is_onlined = #{isOnlined}
+            </if>
+            <if test="beginDate != null and endDate != null">
+                <![CDATA[and ((plan_online_date >= #{beginDate} and plan_online_date <= #{endDate}) 
+                or (online_date >= #{beginDate} and online_date <= #{endDate})
+                or (delay_online_date >= #{beginDate} and delay_online_date <= #{endDate}))
+                ]]>
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and t1.delete_flag = #{deleteFlag}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findNotOnlineInfoListJoinRelDtl" resultMap="MntInstallOnlineInfoResultMap2">
+        select
+        <include refid="MntInstallOnlineInfoJoinRelDtl" />,
+        dtl_code,
+        dtl_name,
+        dtl_desc
+        from 
+        mnt_install_online_info t1 join mnt_release_rec_dtl t2
+        on t1.rel_dtl_id = t2.dtl_id
+        <where>
+        	is_onlined = 0
+            <if test="onlineId != null">
+               and online_id = #{onlineId}
+            </if>
+            <if test="baseId != null">
+                and t1.base_id = #{baseId}
+            </if>
+            <if test="prodId != null">
+                and t1.prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and t1.ver_code = #{verCode}
+            </if>
+            <if test="beginDate != null and endDate != null">
+                <![CDATA[and ((plan_online_date >= #{beginDate} and plan_online_date <= #{endDate}) 
+                or (online_date >= #{beginDate} and online_date <= #{endDate})
+                or (delay_online_date >= #{beginDate} and delay_online_date <= #{endDate}))
+                ]]>
+            </if>
+            <if test="relId != null and relId != ''">
+                and t1.rel_id = #{relId}
+            </if>
+            <if test="planOnlineDate != null">
+                and plan_online_date = #{planOnlineDate}
+            </if>
+            <if test="onlineDate != null">
+                and (plan_online_date = #{onlineDate} or online_date = #{onlineDate} or delay_online_date = #{onlineDate})
+            </if>
+            <if test="isFault != null and isFault != ''">
+                and is_fault = #{isFault}
+            </if>
+            <!-- <if test="isOnlined != null and isOnlined != ''">
+                and is_onlined = #{isOnlined}
+            </if> -->
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and t1.delete_flag = #{deleteFlag}
+            </if>
+        </where>
+    </select>
+    
+    
+    
+</mapper>

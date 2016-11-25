@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.SysBaseTypeMapper">
+
+    <resultMap id="SysBaseTypeResultMap" type="com.ai.mnt.model.product.SysBaseType">
+        <id column="id" property="id" />
+        <result column="table_name" property="tableName" />
+        <result column="col_name" property="colName" />
+        <result column="code_value" property="codeValue" />
+        <result column="cname" property="cname" />
+        <result column="sort_id" property="sortId" />
+        <result column="name_loc" property="nameLoc" />
+        <result column="enum_name" property="enumName" />
+        <result column="system_id" property="systemId" />
+        <result column="is_used" property="isUsed" />
+        <result column="remark" property="remark" />
+        <result column="base_id" property="baseId" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="rel_code" property="relCode" />
+    </resultMap>
+
+    <sql id="SysBaseTypeColumns">
+        id,
+        table_name,
+        col_name,
+        code_value,
+        cname,
+        sort_id,
+        name_loc,
+        enum_name,
+        system_id,
+        is_used,
+        remark,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_base_type (
+        table_name,
+        col_name,
+        code_value,
+        cname,
+        sort_id,
+        name_loc,
+        enum_name,
+        system_id,
+        is_used,
+        remark,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+        )
+        values (
+        #{tableName},
+        #{colName},
+        #{codeValue},
+        #{cname},
+        #{sortId},
+        #{nameLoc},
+        #{enumName},
+        #{systemId},
+        #{isUsed},
+        #{remark},
+        #{baseId},
+        #{prodId},
+        #{verCode},
+        #{relCode}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into sys_base_type (
+        table_name,
+        col_name,
+        code_value,
+        cname,
+        sort_id,
+        name_loc,
+        enum_name,
+        system_id,
+        is_used,
+        remark,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.tableName},
+            #{item.colName},
+            #{item.codeValue},
+            #{item.cname},
+            #{item.sortId},
+            #{item.nameLoc},
+            #{item.enumName},
+            #{item.systemId},
+            #{item.isUsed},
+            #{item.remark},
+            #{item.baseId},
+            #{item.prodId},
+            #{item.verCode},
+            #{item.relCode}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from sys_base_type
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from sys_base_type
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update sys_base_type
+        <set>
+            <if test="tableName != null">
+                table_name = #{tableName},
+            </if>
+            <if test="colName != null">
+                col_name = #{colName},
+            </if>
+            <if test="codeValue != null">
+                code_value = #{codeValue},
+            </if>
+            <if test="cname != null">
+                cname = #{cname},
+            </if>
+            <if test="sortId != null">
+                sort_id = #{sortId},
+            </if>
+            <if test="nameLoc != null">
+                name_loc = #{nameLoc},
+            </if>
+            <if test="enumName != null">
+                enum_name = #{enumName},
+            </if>
+            <if test="systemId != null">
+                system_id = #{systemId},
+            </if>
+            <if test="isUsed != null">
+                is_used = #{isUsed},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="relCode != null">
+                rel_code = #{relCode}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="SysBaseTypeResultMap">
+        select
+        <include refid="SysBaseTypeColumns" />
+        from sys_base_type
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="SysBaseTypeResultMap">
+        select
+        <include refid="SysBaseTypeColumns" />
+        from sys_base_type
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="tableName != null and tableName != ''">
+                and table_name = #{tableName}
+            </if>
+            <if test="colName != null and colName != ''">
+                and col_name = #{colName}
+            </if>
+            <if test="codeValue != null">
+                and code_value = #{codeValue}
+            </if>
+            <if test="cname != null and cname != ''">
+                and cname = #{cname}
+            </if>
+            <if test="sortId != null">
+                and sort_id = #{sortId}
+            </if>
+            <if test="nameLoc != null and nameLoc != ''">
+                and name_loc like '%${nameLoc}%'
+            </if>
+            <if test="enumName != null and enumName != ''">
+                and enum_name like '%${enumName}%'
+            </if>
+            <if test="systemId != null">
+                and system_id = #{systemId}
+            </if>
+            <if test="isUsed != null">
+                and is_used = #{isUsed}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and ver_code = #{verCode}
+            </if>
+            <if test="relCode != null and relCode != ''">
+                and rel_code = #{relCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="SysBaseTypeResultMap">
+        select
+        <include refid="SysBaseTypeColumns" />
+        from sys_base_type
+    </select>
+    
+    
+</mapper>

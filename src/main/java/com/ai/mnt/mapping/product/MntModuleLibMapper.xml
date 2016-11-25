@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntModuleLibMapper">
+
+    <resultMap id="MntModuleLibResultMap" type="com.ai.mnt.model.product.MntModuleLib">
+        <id column="lib_id" property="libId" />
+        <result column="lib_name" property="libName" />
+        <result column="lib_type" property="libType" />
+        <result column="module_id" property="moduleId" />
+        <result column="lib_desc" property="libDesc" />
+        <result column="is_used" property="isUsed" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="remark" property="remark" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+        <association property="mntProdModule" javaType="com.ai.mnt.model.product.MntProdModule" resultMap="MntProdModuleResultMap"/>
+    </resultMap>
+
+    <resultMap id="MntProdModuleResultMap" type="com.ai.mnt.model.product.MntProdModule">
+        <result column="module_name_en" property="moduleNameEn" />
+        <result column="module_name_cn" property="moduleNameCn" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="parent_module_id" property="parentModuleId" />
+        <result column="output_type" property="outputType" />
+        <result column="output" property="output" />
+        <result column="start_command" property="startCommand" />
+        <result column="svn_path" property="svnPath" />
+        <result column="module_desc" property="moduleDesc" />
+    </resultMap>
+
+
+    <sql id="MntModuleLibColumns">
+        lib_id,
+        lib_name,
+        lib_type,
+        module_id,
+        lib_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="libId">
+        insert into mnt_module_lib (
+        lib_name,
+        lib_type,
+        module_id,
+        lib_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{libName},
+        #{libType},
+        #{moduleId},
+        #{libDesc},
+        #{isUsed},
+        #{deleteFlag},
+        #{remark},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_module_lib (
+        lib_name,
+        lib_type,
+        module_id,
+        lib_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.libName},
+            #{item.libType},
+            #{item.moduleId},
+            #{item.libDesc},
+            #{item.isUsed},
+            #{item.deleteFlag},
+            #{item.remark},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_module_lib
+        where
+        lib_id = #{libId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_module_lib
+        where lib_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_module_lib
+        <set>
+            <if test="libName != null">
+                lib_name = #{libName},
+            </if>
+            <if test="libType != null">
+                lib_type = #{libType},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId},
+            </if>
+            <if test="libDesc != null">
+                lib_desc = #{libDesc},
+            </if>
+            <if test="isUsed != null">
+                is_used = #{isUsed},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        lib_id = #{libId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntModuleLibResultMap">
+        select
+        <include refid="MntModuleLibColumns" />
+        from mnt_module_lib
+        where lib_id = #{libId}
+    </select>
+
+    <select id="findList" resultMap="MntModuleLibResultMap">
+        select
+        <include refid="MntModuleLibColumns" />
+        from mnt_module_lib
+        <where>
+            <if test="libId != null">
+                lib_id = #{libId}
+            </if>
+            <if test="libName != null and libName != ''">
+                and lib_name = #{libName}
+            </if>
+            <if test="libType != null and libType != ''">
+                and lib_type = #{libType}
+            </if>
+            <if test="moduleId != null">
+                and module_id = #{moduleId}
+            </if>
+            <if test="libDesc != null and libDesc != ''">
+                and lib_desc = #{libDesc}
+            </if>
+            <if test="isUsed != null and isUsed != ''">
+                and is_used = #{isUsed}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntModuleLibResultMap">
+        select
+        <include refid="MntModuleLibColumns" />
+        from mnt_module_lib
+    </select>
+    
+    <sql id="MntModuleLibColumns2">
+        lib_id,
+        lib_name,
+        lib_type,
+        t1.module_id,
+        lib_desc,
+        t1.is_used,
+        t1.delete_flag,
+        t1.remark,
+        t1.creator,
+        t1.create_date,
+        t1.modifier,
+        t1.modify_date
+    </sql>
+    
+    <sql id="MntModuleColumns">
+        module_name_en,
+        module_name_cn,
+        prod_id,
+        ver_code,
+        parent_module_id,
+        output_type,
+        output,
+        start_command,
+        svn_path,
+        module_desc
+    </sql>
+    
+    <select id="findModuleLibJoinModule" resultMap="MntModuleLibResultMap">
+    SELECT
+        <include refid="MntModuleLibColumns2"/>,
+        <include refid="MntModuleColumns" />
+    FROM
+    mnt_module_lib t1 JOIN mnt_prod_module t2 on t1.module_id = t2.module_id
+    <where>
+            <if test="libId != null">
+                lib_id = #{libId}
+            </if>
+            <if test="libName != null and libName != ''">
+                and lib_name like '%${libName}%'
+            </if>
+            <if test="moduleId != null">
+                and t1.module_id = #{moduleId}
+            </if>
+            <if test="libDesc != null and libDesc != ''">
+                and lib_desc = #{libDesc}
+            </if>
+            <if test="isUsed != null and isUsed != ''">
+                and t1.is_used = #{isUsed}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and t1.delete_flag = #{deleteFlag}
+            </if>
+            <if test="remark != null and remark != ''">
+                and t1.remark = #{remark}
+            </if>
+            <if test="mntProdModule.prodId != null">
+                and prod_id = #{mntProdModule.prodId}
+            </if>
+            <if test="mntProdModule.verCode != null and mntProdModule.verCode != ''">
+                and ver_code = #{mntProdModule.verCode}
+            </if>
+            <if test="mntProdModule.moduleName != null and mntProdModule.moduleName !=''">
+                and (module_name_cn like '%${mntProdModule.moduleName}%' or module_name_en like '%${mntProdModule.moduleName}%')
+            </if>
+    </where>
+    </select>
+    
+    
+</mapper>

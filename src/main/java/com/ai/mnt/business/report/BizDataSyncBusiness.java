@@ -316,7 +316,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                     mntReqTrack.setDeleteFlag("0");
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
                     fillDataForExcelSheet(reqTrackList, sheet);
-                }if(sheet.getSheetName().contains("本部门需求跟踪")) {
+                }else if(sheet.getSheetName().contains("本部门需求跟踪")) {
                     mntReqTrack.setBizType("客户需求");
                     mntReqTrack.setDeleteFlag("0");
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);

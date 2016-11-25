@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntLibRelationExtMapper">
+
+    <resultMap id="MntLibRelationExtResultMap" type="com.ai.mnt.model.product.MntLibRelationExt">
+        <id column="id" property="id" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="lib_name" property="libName" />
+        <result column="rel_lib_name" property="relLibName" />
+        <result column="rel_desc" property="relDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntLibRelationExtColumns">
+        id,
+        prod_id,
+        ver_code,
+        lib_name,
+        rel_lib_name,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into mnt_lib_relation_ext (
+        prod_id,
+        ver_code,
+        lib_name,
+        rel_lib_name,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{prodId},
+        #{verCode},
+        #{libName},
+        #{relLibName},
+        #{relDesc},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_lib_relation_ext (
+        prod_id,
+        ver_code,
+        lib_name,
+        rel_lib_name,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.prodId},
+            #{item.verCode},
+            #{item.libName},
+            #{item.relLibName},
+            #{item.relDesc},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_lib_relation_ext
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_lib_relation_ext
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_lib_relation_ext
+        <set>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="libName != null">
+                lib_name = #{libName},
+            </if>
+            <if test="relLibName != null">
+                rel_lib_name = #{relLibName},
+            </if>
+            <if test="relDesc != null">
+                rel_desc = #{relDesc},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntLibRelationExtResultMap">
+        select
+        <include refid="MntLibRelationExtColumns" />
+        from mnt_lib_relation_ext
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="MntLibRelationExtResultMap">
+        select
+        <include refid="MntLibRelationExtColumns" />
+        from mnt_lib_relation_ext
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and ver_code = #{verCode}
+            </if>
+            <if test="libName != null and libName != ''">
+                and lib_name = #{libName}
+            </if>
+            <if test="relLibName != null and relLibName != ''">
+                and rel_lib_name = #{relLibName}
+            </if>
+            <if test="relDesc != null and relDesc != ''">
+                and rel_desc = #{relDesc}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntLibRelationExtResultMap">
+        select
+        <include refid="MntLibRelationExtColumns" />
+        from mnt_lib_relation_ext
+    </select>
+    
+    
+</mapper>

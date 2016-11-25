@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntProdVersionMapper">
+
+    <resultMap id="MntProdVersionResultMap" type="com.ai.mnt.model.product.MntProdVersion">
+        <id column="ver_id" property="verId" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="ver_name" property="verName" />
+        <result column="ver_desc" property="verDesc" />
+        <result column="valid_date" property="validDate" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntProdVersionColumns">
+        ver_id,
+        prod_id,
+        ver_code,
+        ver_name,
+        ver_desc,
+        valid_date,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="verId">
+        insert into mnt_prod_version (
+        prod_id,
+        ver_code,
+        ver_name,
+        ver_desc,
+        valid_date,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{prodId},
+        #{verCode},
+        #{verName},
+        #{verDesc},
+        #{validDate},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_prod_version (
+        prod_id,
+        ver_code,
+        ver_name,
+        ver_desc,
+        valid_date,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.prodId},
+            #{item.verCode},
+            #{item.verName},
+            #{item.verDesc},
+            #{item.validDate},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_prod_version
+        where
+        ver_id = #{verId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_prod_version
+        where ver_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_prod_version
+        <set>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="verName != null">
+                ver_name = #{verName},
+            </if>
+            <if test="verDesc != null">
+                ver_desc = #{verDesc},
+            </if>
+            <if test="validDate != null">
+                valid_date = #{validDate},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        ver_id = #{verId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntProdVersionResultMap">
+        select
+        <include refid="MntProdVersionColumns" />
+        from mnt_prod_version
+        where ver_id = #{verId}
+    </select>
+
+    <select id="findList" resultMap="MntProdVersionResultMap">
+        select
+        <include refid="MntProdVersionColumns" />
+        from mnt_prod_version
+        <where>
+            <if test="verId != null">
+                ver_id = #{verId}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null">
+                and ver_code = #{verCode}
+            </if>
+            <if test="verName != null">
+                and ver_name = #{verName}
+            </if>
+            <if test="verDesc != null">
+                and ver_desc = #{verDesc}
+            </if>
+            <if test="validDate != null">
+                and valid_date = #{validDate}
+            </if>
+            <if test="deleteFlag != null">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+        order by prod_id asc, ver_name asc
+    </select>
+
+    <select id="findAll" resultMap="MntProdVersionResultMap">
+        select
+        <include refid="MntProdVersionColumns" />
+        from mnt_prod_version
+        order by prod_id asc, ver_name asc
+    </select>
+    
+</mapper>

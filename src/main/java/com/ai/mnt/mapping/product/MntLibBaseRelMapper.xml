@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntLibBaseRelMapper">
+
+    <resultMap id="MntLibBaseRelResultMap" type="com.ai.mnt.model.product.MntLibBaseRel">
+        <id column="id" property="id" />
+        <result column="lib_rel_his_id" property="libRelHisId" />
+        <result column="base_id" property="baseId" />
+        <result column="rel_desc" property="relDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntLibBaseRelColumns">
+        id,
+        lib_rel_his_id,
+        base_id,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into mnt_lib_base_rel (
+        lib_rel_his_id,
+        base_id,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{libRelHisId},
+        #{baseId},
+        #{relDesc},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_lib_base_rel (
+        lib_rel_his_id,
+        base_id,
+        rel_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.libRelHisId},
+            #{item.baseId},
+            #{item.relDesc},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_lib_base_rel
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteMntLibBaseRel">
+        delete from mnt_lib_base_rel
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>            
+            <if test="libRelHisId != null">
+                lib_rel_his_id = #{libRelHisId}
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId}
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_lib_base_rel
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_lib_base_rel
+        <set>
+            <if test="libRelHisId != null">
+                lib_rel_his_id = #{libRelHisId},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="relDesc != null">
+                rel_desc = #{relDesc},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntLibBaseRelResultMap">
+        select
+        <include refid="MntLibBaseRelColumns" />
+        from mnt_lib_base_rel
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="MntLibBaseRelResultMap">
+        select
+        <include refid="MntLibBaseRelColumns" />
+        from mnt_lib_base_rel
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="libRelHisId != null">
+                and lib_rel_his_id = #{libRelHisId}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="relDesc != null and relDesc != ''">
+                and rel_desc = #{relDesc}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntLibBaseRelResultMap">
+        select
+        <include refid="MntLibBaseRelColumns" />
+        from mnt_lib_base_rel
+    </select>
+    
+    
+</mapper>

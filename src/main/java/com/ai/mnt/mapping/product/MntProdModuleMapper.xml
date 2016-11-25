@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntProdModuleMapper">
+
+    <resultMap id="MntProdModuleResultMap" type="com.ai.mnt.model.product.MntProdModule">
+        <id column="module_id" property="moduleId" />
+        <result column="module_name_en" property="moduleNameEn" />
+        <result column="module_name_cn" property="moduleNameCn" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="parent_module_id" property="parentModuleId" />
+        <result column="output_type" property="outputType" />
+        <result column="output" property="output" />
+        <result column="start_command" property="startCommand" />
+        <result column="svn_path" property="svnPath" />
+        <result column="module_desc" property="moduleDesc" />
+        <result column="is_used" property="isUsed" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="remark" property="remark" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntProdModuleColumns">
+        module_id,
+        module_name_en,
+        module_name_cn,
+        prod_id,
+        ver_code,
+        parent_module_id,
+        output_type,
+        output,
+        start_command,
+        svn_path,
+        module_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="moduleId">
+        insert into mnt_prod_module (
+        module_name_en,
+        module_name_cn,
+        prod_id,
+        ver_code,
+        parent_module_id,
+        output_type,
+        output,
+        start_command,
+        svn_path,
+        module_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{moduleNameEn},
+        #{moduleNameCn},
+        #{prodId},
+        #{verCode},
+        #{parentModuleId},
+        #{outputType},
+        #{output},
+        #{startCommand},
+        #{svnPath},
+        #{moduleDesc},
+        #{isUsed},
+        #{deleteFlag},
+        #{remark},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_prod_module (
+        module_name_en,
+        module_name_cn,
+        prod_id,
+        ver_code,
+        parent_module_id,
+        output_type,
+        output,
+        start_command,
+        svn_path,
+        module_desc,
+        is_used,
+        delete_flag,
+        remark,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.moduleNameEn},
+            #{item.moduleNameCn},
+            #{item.prodId},
+            #{item.verCode},
+            #{item.parentModuleId},
+            #{item.outputType},
+            #{item.output},
+            #{item.startCommand},
+            #{item.svnPath},
+            #{item.moduleDesc},
+            #{item.isUsed},
+            #{item.deleteFlag},
+            #{item.remark},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_prod_module
+        where
+        module_id = #{moduleId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_prod_module
+        where module_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_prod_module
+        <set>
+            <if test="moduleNameEn != null">
+                module_name_en = #{moduleNameEn},
+            </if>
+            <if test="moduleNameCn != null">
+                module_name_cn = #{moduleNameCn},
+            </if>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="parentModuleId != null">
+                parent_module_id = #{parentModuleId},
+            </if>
+            <if test="outputType != null">
+                output_type = #{outputType},
+            </if>
+            <if test="output != null">
+                output = #{output},
+            </if>
+            <if test="startCommand != null">
+                start_command = #{startCommand},
+            </if>
+            <if test="svnPath != null">
+                svn_path = #{svnPath},
+            </if>
+            <if test="moduleDesc != null">
+                module_desc = #{moduleDesc},
+            </if>
+            <if test="isUsed != null">
+                is_used = #{isUsed},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        module_id = #{moduleId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntProdModuleResultMap">
+        select
+        <include refid="MntProdModuleColumns" />
+        from mnt_prod_module
+        where module_id = #{moduleId}
+    </select>
+
+    <select id="findList" resultMap="MntProdModuleResultMap">
+        select
+        <include refid="MntProdModuleColumns" />
+        from mnt_prod_module
+        <where>
+            <if test="moduleId != null">
+                module_id = #{moduleId}
+            </if>
+            <if test="moduleNameEn != null and moduleNameEn != ''">
+                and module_name_en = #{moduleNameEn}
+            </if>
+            <if test="moduleNameCn != null and moduleNameCn != ''">
+                and module_name_cn = #{moduleNameCn}
+            </if>
+            <if test="moduleName != null and moduleName !=''">
+                and (module_name_cn like '%${moduleName}%' or module_name_en like '%${moduleName}%')
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and ver_code = #{verCode}
+            </if>
+            <if test="parentModuleId != null">
+                and parent_module_id = #{parentModuleId}
+            </if>
+            <if test="outputType != null and outputType != ''">
+                and output_type = #{outputType}
+            </if>
+            <if test="output != null and output != ''">
+                and output = #{output}
+            </if>
+            <if test="startCommand != null and startCommand != ''">
+                and start_command = #{startCommand}
+            </if>
+            <if test="svnPath != null and svnPath != ''">
+                and svn_path = #{svnPath}
+            </if>
+            <if test="moduleDesc != null and moduleDesc != ''">
+                and module_desc = #{moduleDesc}
+            </if>
+            <if test="isUsed != null and isUsed != ''">
+                and is_used = #{isUsed}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+            <if test="beginDate != null">
+                <![CDATA[and create_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and create_date <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntProdModuleResultMap">
+        select
+        <include refid="MntProdModuleColumns" />
+        from mnt_prod_module
+    </select>
+    
+    
+</mapper>

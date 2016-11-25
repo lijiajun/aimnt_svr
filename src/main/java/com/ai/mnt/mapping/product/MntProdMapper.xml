@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntProdMapper">
+
+    <resultMap id="MntProdResultMap" type="com.ai.mnt.model.product.MntProd">
+        <id column="prod_id" property="prodId" />
+        <result column="prod_name" property="prodName" />
+        <result column="prod_type" property="prodType" />
+        <result column="prod_desc" property="prodDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+    </resultMap>
+
+    <sql id="MntProdColumns">
+        prod_id,
+        prod_name,
+        prod_type,
+        prod_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="prodId">
+        insert into mnt_prod (
+        prod_name,
+        prod_type,
+        prod_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{prodName},
+        #{prodType},
+        #{prodDesc},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_prod (
+        prod_name,
+        prod_type,
+        prod_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.prodName},
+            #{item.prodType},
+            #{item.prodDesc},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_prod
+        where
+        prod_id = #{prodId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_prod
+        where prod_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_prod
+        <set>
+            <if test="prodName != null">
+                prod_name = #{prodName},
+            </if>
+            <if test="prodType != null">
+                prod_type = #{prodType},
+            </if>
+            <if test="prodDesc != null">
+                prod_desc = #{prodDesc},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        prod_id = #{prodId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntProdResultMap">
+        select
+        <include refid="MntProdColumns" />
+        from mnt_prod
+        where prod_id = #{prodId}
+    </select>
+
+    <select id="findList" resultMap="MntProdResultMap">
+        select
+        <include refid="MntProdColumns" />
+        from mnt_prod
+        <where>
+            <if test="prodId != null">
+                prod_id = #{prodId}
+            </if>
+            <if test="prodName != null">
+                and prod_name = #{prodName}
+            </if>
+            <if test="prodType != null">
+                and prod_type = #{prodType}
+            </if>
+            <if test="prodDesc != null">
+                and prod_desc = #{prodDesc}
+            </if>
+            <if test="deleteFlag != null">
+                and delete_flag = #{deleteFlag}
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntProdResultMap">
+        select
+        <include refid="MntProdColumns" />
+        from mnt_prod
+    </select>
+    
+<!--     <cache type="org.mybatis.caches.ehcache.LoggingEhcache" /> -->
+</mapper>

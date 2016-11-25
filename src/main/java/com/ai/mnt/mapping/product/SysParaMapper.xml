@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.SysParaMapper">
+
+    <resultMap id="SysParaResultMap" type="com.ai.mnt.model.product.SysPara">
+        <id column="para_id" property="paraId" />
+        <result column="region_code" property="regionCode" />
+        <result column="county_code" property="countyCode" />
+        <result column="param_code" property="paramCode" />
+        <result column="param_name" property="paramName" />
+        <result column="param_class" property="paramClass" />
+        <result column="param_data_type" property="paramDataType" />
+        <result column="param_value" property="paramValue" />
+        <result column="param_desc" property="paramDesc" />
+        <result column="base_id" property="baseId" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="rel_code" property="relCode" />
+    </resultMap>
+
+    <sql id="SysParaColumns">
+        para_id,
+        region_code,
+        county_code,
+        param_code,
+        param_name,
+        param_class,
+        param_data_type,
+        param_value,
+        param_desc,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="paraId">
+        insert into sys_para (
+        region_code,
+        county_code,
+        param_code,
+        param_name,
+        param_class,
+        param_data_type,
+        param_value,
+        param_desc,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+        )
+        values (
+        #{regionCode},
+        #{countyCode},
+        #{paramCode},
+        #{paramName},
+        #{paramClass},
+        #{paramDataType},
+        #{paramValue},
+        #{paramDesc},
+        #{baseId},
+        #{prodId},
+        #{verCode},
+        #{relCode}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into sys_para (
+        region_code,
+        county_code,
+        param_code,
+        param_name,
+        param_class,
+        param_data_type,
+        param_value,
+        param_desc,
+        base_id,
+        prod_id,
+        ver_code,
+        rel_code
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.regionCode},
+            #{item.countyCode},
+            #{item.paramCode},
+            #{item.paramName},
+            #{item.paramClass},
+            #{item.paramDataType},
+            #{item.paramValue},
+            #{item.paramDesc},
+            #{item.baseId},
+            #{item.prodId},
+            #{item.verCode},
+            #{item.relCode}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from sys_para
+        where
+        para_id = #{paraId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from sys_para
+        where para_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update sys_para
+        <set>
+            <if test="regionCode != null">
+                region_code = #{regionCode},
+            </if>
+            <if test="countyCode != null">
+                county_code = #{countyCode},
+            </if>
+            <if test="paramCode != null">
+                param_code = #{paramCode},
+            </if>
+            <if test="paramName != null">
+                param_name = #{paramName},
+            </if>
+            <if test="paramClass != null">
+                param_class = #{paramClass},
+            </if>
+            <if test="paramDataType != null">
+                param_data_type = #{paramDataType},
+            </if>
+            <if test="paramValue != null">
+                param_value = #{paramValue},
+            </if>
+            <if test="paramDesc != null">
+                param_desc = #{paramDesc},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="prodId != null">
+                prod_id = #{prodId},
+            </if>
+            <if test="verCode != null">
+                ver_code = #{verCode},
+            </if>
+            <if test="relCode != null">
+                rel_code = #{relCode}
+            </if>
+        </set>
+        where
+        para_id = #{paraId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="SysParaResultMap">
+        select
+        <include refid="SysParaColumns" />
+        from sys_para
+        where para_id = #{paraId}
+    </select>
+
+    <select id="findList" resultMap="SysParaResultMap">
+        select
+        <include refid="SysParaColumns" />
+        from sys_para
+        <where>
+            <if test="paraId != null">
+                para_id = #{paraId}
+            </if>
+            <if test="regionCode != null">
+                and region_code = #{regionCode}
+            </if>
+            <if test="countyCode != null">
+                and county_code = #{countyCode}
+            </if>
+            <if test="paramCode != null and paramCode != ''">
+                and param_code like '%${paramCode}%'
+            </if>
+            <if test="paramName != null and paramName != ''">
+                and param_name like '%${paramName}%'
+            </if>
+            <if test="paramClass != null">
+                and param_class = #{paramClass}
+            </if>
+            <if test="paramDataType != null and paramDataType != ''">
+                and param_data_type = #{paramDataType}
+            </if>
+            <if test="paramValue != null and paramValue != ''">
+                and param_value = #{paramValue}
+            </if>
+            <if test="paramDesc != null and paramDesc != ''">
+                and param_desc = #{paramDesc}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="prodId != null">
+                and prod_id = #{prodId}
+            </if>
+            <if test="verCode != null and verCode != ''">
+                and ver_code = #{verCode}
+            </if>
+            <if test="relCode != null and relCode != ''">
+                and rel_code = #{relCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="SysParaResultMap">
+        select
+        <include refid="SysParaColumns" />
+        from sys_para
+    </select>
+    
+    
+</mapper>

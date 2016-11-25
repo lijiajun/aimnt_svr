@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntReleaseRecDtlMapper">
+
+    <resultMap id="MntReleaseRecDtlResultMap" type="com.ai.mnt.model.product.MntReleaseRecDtl">
+        <id column="dtl_id" property="dtlId" />
+        <result column="rel_id" property="relId" />
+        <result column="dtl_type" property="dtlType" />
+        <result column="dtl_code" property="dtlCode" />
+        <result column="dtl_name" property="dtlName" />
+        <result column="base_id" property="baseId" />
+        <result column="dtl_desc" property="dtlDesc" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="creator" property="creator" />
+        <result column="create_date" property="createDate" />
+        <result column="modifier" property="modifier" />
+        <result column="modify_date" property="modifyDate" />
+        <association property="mntReleaseRec" javaType="com.ai.mnt.model.product.MntReleaseRec" resultMap="MntReleaseRecResultMap"/>
+    </resultMap>
+    
+    <resultMap id="MntReleaseRecResultMap" type="com.ai.mnt.model.product.MntReleaseRec">
+        <result column="rel_code" property="relCode" />
+        <result column="prod_id" property="prodId" />
+        <result column="ver_code" property="verCode" />
+        <result column="rel_type" property="relType" />
+        <result column="rel_desc" property="relDesc" />
+        <result column="rel_date" property="relDate" />
+    </resultMap>
+    
+    <select id="getRelDtlForProdStat" resultMap="MntReleaseRecResultMap">
+        select 
+        t2.prod_id, 
+        count(dtl_id) as dtl_count
+        from 
+        mnt_release_rec_dtl t1 join mnt_release_rec t2 
+        on t1.rel_id = t2.rel_id
+        group by t2.prod_id 
+        <where>
+            <if test="beginDate != null">
+                <![CDATA[t2.rel_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and t2.rel_date <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+    
+    
+    <!-- 安装点需求量统计 -->
+    <resultMap id="MntReleaseRecDtlStat" type="com.ai.mnt.model.product.MntReleaseRecDtl">
+        <result column="base_id" property="baseId" />
+        <result column="dtl_count" property="dtlCount" />
+        <result column="rel_date" property="relDate" />
+    </resultMap>
+    
+    <select id="getStatResForBaseId" resultMap="MntReleaseRecDtlStat" parameterType="com.ai.mnt.model.product.MntReleaseRecDtl">
+        select 
+        t1.base_id, 
+        count(dtl_id) as dtl_count
+        from 
+        mnt_release_rec_dtl t1 join mnt_release_rec t2 
+        on t1.rel_id = t2.rel_id
+        <where>
+            <if test="beginDate != null">
+                <![CDATA[
+                t1.rel_date >= #{beginDate}
+                ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[
+                and t1.rel_date >= #{endDate}
+                ]]>
+            </if>
+        </where>
+        group by t1.base_id
+    </select>
+    <!-- 安装点需求量统计 end-->
+    
+    <sql id="MntReleaseRecDtlColumns">
+        dtl_id,
+        rel_id,
+        dtl_type,
+        dtl_code,
+        dtl_name,
+        base_id,
+        dtl_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="dtlId">
+        insert into mnt_release_rec_dtl (
+        rel_id,
+        dtl_type,
+        dtl_code,
+        dtl_name,
+        base_id,
+        dtl_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values (
+        #{relId},
+        #{dtlType},
+        #{dtlCode},
+        #{dtlName},
+        #{baseId},
+        #{dtlDesc},
+        #{deleteFlag},
+        #{creator},
+        #{createDate},
+        #{modifier},
+        #{modifyDate}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_release_rec_dtl (
+        rel_id,
+        dtl_type,
+        dtl_code,
+        dtl_name,
+        base_id,
+        dtl_desc,
+        delete_flag,
+        creator,
+        create_date,
+        modifier,
+        modify_date
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.relId},
+            #{item.dtlType},
+            #{item.dtlCode},
+            #{item.dtlName},
+            #{item.baseId},
+            #{item.dtlDesc},
+            #{item.deleteFlag},
+            #{item.creator},
+            #{item.createDate},
+            #{item.modifier},
+            #{item.modifyDate}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_release_rec_dtl
+        where
+        dtl_id = #{dtlId}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_release_rec_dtl
+        where dtl_id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_release_rec_dtl
+        <set>
+            <if test="relId != null">
+                rel_id = #{relId},
+            </if>
+            <if test="dtlType != null">
+                dtl_type = #{dtlType},
+            </if>
+            <if test="dtlCode != null">
+                dtl_code = #{dtlCode},
+            </if>
+            <if test="dtlName != null">
+                dtl_name = #{dtlName},
+            </if>
+            <if test="baseId != null">
+                base_id = #{baseId},
+            </if>
+            <if test="dtlDesc != null">
+                dtl_desc = #{dtlDesc},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag},
+            </if>
+            <if test="creator != null">
+                creator = #{creator},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate}
+            </if>
+        </set>
+        where
+        dtl_id = #{dtlId}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntReleaseRecDtlResultMap">
+        select
+        <include refid="MntReleaseRecDtlColumns" />
+        from mnt_release_rec_dtl
+        where dtl_id = #{dtlId}
+    </select>
+
+    <select id="findList" resultMap="MntReleaseRecDtlResultMap" useCache="false">
+        select
+        <include refid="MntReleaseRecDtlColumns" />
+        from mnt_release_rec_dtl
+        <where>
+            <if test="dtlId != null">
+                dtl_id = #{dtlId}
+            </if>
+            <if test="relId != null">
+                and rel_id = #{relId}
+            </if>
+            <if test="dtlType != null">
+                and dtl_type = #{dtlType}
+            </if>
+            <if test="dtlCode != null">
+                and dtl_code = #{dtlCode}
+            </if>
+            <if test="dtlName != null">
+                and dtl_name = #{dtlName}
+            </if>
+            <if test="baseId != null">
+                and base_id = #{baseId}
+            </if>
+            <if test="dtlDesc != null">
+                and dtl_desc = #{dtlDesc}
+            </if>
+            <if test="deleteFlag != null">
+                and delete_flag = 0
+            </if>
+            <if test="creator != null">
+                and creator = #{creator}
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate}
+            </if>
+            <if test="modifier != null">
+                and modifier = #{modifier}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntReleaseRecDtlResultMap">
+        select
+        <include refid="MntReleaseRecDtlColumns" />
+        from mnt_release_rec_dtl
+    </select>
+    
+    <sql id="MntReleaseRecDtlJoin">
+        dtl_id,
+        t2.rel_id,
+        dtl_type,
+        dtl_code,
+        dtl_name,
+        base_id,
+        dtl_desc,
+        t2.delete_flag,
+        t2.creator,
+        t2.create_date,
+        t2.modifier,
+        t2.modify_date
+    </sql>
+    
+    <sql id="MntReleaseRecColumns">
+        rel_code,
+        prod_id,
+        ver_code,
+        rel_type,
+        rel_desc,
+        rel_date
+    </sql>
+    
+    <select id="findRecAndDtlJoinList" resultMap="MntReleaseRecDtlResultMap">
+        select 
+        <include refid="MntReleaseRecDtlJoin"/>,
+        <include refid="MntReleaseRecColumns" />
+        from 
+        mnt_release_rec_dtl t2 
+        JOIN  
+        mnt_release_rec t1 
+        on t1.rel_id = t2.rel_id
+        <where> 
+            <if test="mntReleaseRec.prodId != null">
+                t1.prod_id = #{mntReleaseRec.prodId}
+            </if>
+            <if test="mntReleaseRec.relCode != null and mntReleaseRec.relCode != ''">
+                and t1.rel_code like '%${mntReleaseRec.relCode}%'
+            </if>
+            <if test="mntReleaseRec.verCode != null and mntReleaseRec.verCode != ''">
+                and t1.ver_code = #{mntReleaseRec.verCode}
+            </if>
+            <if test="dtlCode != null and dtlCode != ''">
+                and t2.dtl_code like '%${dtlCode}%'
+            </if>
+            <if test="dtlType != null">
+                and t2.dtl_type = #{dtlType}
+            </if>
+            <if test="dtlName != null and dtlName != ''">
+                and t2.dtl_name like '%${dtlName}%'
+            </if>
+            <if test="dtlId != null and dtlId != ''">
+                and t2.dtl_id = #{dtlId}
+            </if>
+            <if test="baseId != null">
+                and t2.base_id = #{baseId}
+            </if>
+            <if test="deleteFlag != null and deleteFlag != ''">
+                and t2.delete_flag = #{deleteFlag}
+            </if>
+            <if test="relId != null">
+                and t2.rel_id = #{relId}
+            </if>
+            <if test="mntReleaseRec.beginDate != null">
+                <![CDATA[and t1.rel_date >= #{mntReleaseRec.beginDate}]]>
+            </if>
+            <if test="mntReleaseRec.endDate != null">
+                <![CDATA[and t1.rel_date <= #{mntReleaseRec.endDate}]]>
+            </if>
+        </where>
+    </select>
+    
+    
+</mapper>

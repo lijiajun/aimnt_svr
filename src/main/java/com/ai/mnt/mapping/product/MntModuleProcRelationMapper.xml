@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ai.mnt.persistence.product.MntModuleProcRelationMapper">
+
+    <resultMap id="MntModuleProcRelationResultMap" type="com.ai.mnt.model.product.MntModuleProcRelation">
+        <id column="id" property="id" />
+        <result column="proc_id" property="procId" />
+        <result column="module_id" property="moduleId" />
+        <result column="rel_desc" property="relDesc" />
+    </resultMap>
+
+    <sql id="MntModuleProcRelationColumns">
+        id,
+        proc_id,
+        module_id,
+        rel_desc
+    </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into mnt_module_proc_relation (
+        proc_id,
+        module_id,
+        rel_desc
+        )
+        values (
+        #{procId},
+        #{moduleId},
+        #{relDesc}
+        )
+    </insert>
+
+    <insert id="saveAll">
+        insert into mnt_module_proc_relation (
+        proc_id,
+        module_id,
+        rel_desc
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.procId},
+            #{item.moduleId},
+            #{item.relDesc}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        delete from mnt_module_proc_relation
+        where
+        id = #{id}
+    </delete>
+
+    <delete id="deleteList">
+        delete from mnt_module_proc_relation
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteModuleProcRelation">
+        delete from mnt_module_proc_relation
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="procId != null">
+                proc_id = #{procId}
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId}
+            </if>
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey">
+        update mnt_module_proc_relation
+        <set>
+            <if test="procId != null">
+                proc_id = #{procId},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId},
+            </if>
+            <if test="relDesc != null">
+                rel_desc = #{relDesc}
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <select id="findByPrimaryKey" resultMap="MntModuleProcRelationResultMap">
+        select
+        <include refid="MntModuleProcRelationColumns" />
+        from mnt_module_proc_relation
+        where id = #{id}
+    </select>
+
+    <select id="findList" resultMap="MntModuleProcRelationResultMap">
+        select
+        <include refid="MntModuleProcRelationColumns" />
+        from mnt_module_proc_relation
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="procId != null">
+                and proc_id = #{procId}
+            </if>
+            <if test="moduleId != null">
+                and module_id = #{moduleId}
+            </if>
+            <if test="relDesc != null">
+                and rel_desc = #{relDesc}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="MntModuleProcRelationResultMap">
+        select
+        <include refid="MntModuleProcRelationColumns" />
+        from mnt_module_proc_relation
+    </select>
+    
+    
+</mapper>

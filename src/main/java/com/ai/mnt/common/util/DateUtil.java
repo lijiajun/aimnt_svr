@@ -151,10 +151,10 @@ public class DateUtil {
             beginDateTemp = date;
         }
         if (granularity.equals("2")) {// 周
-            beginDateTemp = this.getWeekBegin(date);
+            beginDateTemp = getWeekBegin(date);
         }
         if (granularity.equals("3")) {// 旬
-            beginDateTemp = this.getPeriodBegin(date);
+            beginDateTemp = getPeriodBegin(date);
         } else if (granularity.equals("4")) {// 月
             beginDateTemp = getMonthBegin(date);
         } else if (granularity.equals("5")) {// 季
@@ -186,7 +186,7 @@ public class DateUtil {
             beginDateTemp = date;
         }
         if (granularity.equals("2")) {// 周
-            beginDateTemp = this.getWeekEnd(date);
+            beginDateTemp = getWeekEnd(date);
         }
         if (granularity.equals("3")) {// 旬
             beginDateTemp = this.getPeriodEnd(date);
@@ -647,7 +647,7 @@ public class DateUtil {
      * @param date
      * @return
      */
-    public Date getWeekBegin(Date date) {
+    public static Date getWeekBegin(Date date) {
 
         int year = Integer.parseInt(FormatDate(date, "yyyy"));
         int month = Integer.parseInt(FormatDate(date, "MM"));
@@ -674,7 +674,7 @@ public class DateUtil {
      * @param date
      * @return
      */
-    public Date getWeekEnd(Date date) {
+    public static Date getWeekEnd(Date date) {
 
         int year = Integer.parseInt(FormatDate(date, "yyyy"));
         int month = Integer.parseInt(FormatDate(date, "MM"));
@@ -1045,6 +1045,24 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    
+    /**
+     * add by lkl对日期增加或减少多少秒后的日期
+     * 
+     * @param date
+     * @param second
+     * @return
+     */
+    public static Date addDay(Date date, int day) {
+        if (date == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, day);
+        return calendar.getTime();
+    }
+    
     /**
      * add by zhoupenghui 计算两个日期差（秒）
      * 
@@ -1123,6 +1141,26 @@ public class DateUtil {
         return yearMap;
     }
 
+    public static Date getWeekStartDate(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); 
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        return cal.getTime();
+    }
+    
+    public static Date getWeekEndDate(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); 
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        return DateUtil.addDay(cal.getTime(), 1);
+    }
+    
     /**
      * 主函数
      * 
@@ -1133,6 +1171,20 @@ public class DateUtil {
         System.out.println(getMonthEnd(new Date()));
         System.out.println(getMonthBegin(new Date()));
 
+        System.out.println(getWeekBegin(new Date()));
+        System.out.println(getWeekEnd(new Date()));
+        System.out.println(getWeekBegin(DateUtil.addDay(DateUtil.getWeekEnd(DateUtil.getCurrDate()), 5)));
+        System.out.println(getWeekEnd(DateUtil.addDay(DateUtil.getWeekEnd(DateUtil.getCurrDate()), 5)));
+        
+        
+        System.out.println(getWeekStartDate(DateUtil.getCurrDate()));
+        System.out.println(getWeekEndDate(DateUtil.getCurrDate()));
+        System.out.println(DateUtil.addDay(DateUtil.getWeekEndDate(DateUtil.getCurrDate()), 1));
+        System.out.println(DateUtil.getWeekStartDate(DateUtil.addDay(DateUtil.getWeekEndDate(DateUtil.getCurrDate()), 3)));
+        
+        
+        
+        
     }
 
 }
