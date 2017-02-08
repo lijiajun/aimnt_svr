@@ -350,6 +350,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
                     mntReqTrack.setBizType("客户需求");
                     mntReqTrack.setDeleteFlag("0");
                     mntReqTrack.setDealDays(120); //>=120天
+                    mntReqTrack.setSubmitDate(null);
                     List<MntReqTrack> reqTrackList = mntReqTrackService.findMntReqTrackList(mntReqTrack);
                     fillDataForExcelSheet(reqTrackList, sheet);
                 }else if(sheet.getSheetName().contains("部门未完成BUG跟踪列表")) {
