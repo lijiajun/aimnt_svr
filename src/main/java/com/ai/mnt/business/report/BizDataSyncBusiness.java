@@ -137,6 +137,9 @@ public class BizDataSyncBusiness implements BaseBusiness{
                 
                 //导出excel
                 String exportPath = BaseDataCache.getDataName("FILE_PATH", "req_track_excel_path");
+                
+                //exportPath = "D:\\biz\\";
+                
                 File dir = new File(exportPath);
                 if(!dir.exists()) {
                     dir.mkdir();
@@ -301,7 +304,7 @@ public class BizDataSyncBusiness implements BaseBusiness{
         Workbook wb = null;
         FileOutputStream fos = null;
         try {
-            String filePath = "template/req_track_templet_v2.xls";
+            String filePath = "template/req_track_templet_v3.xls";
             String fullFilePath = this.getClass().getClassLoader().getResource(filePath).getPath();
             wb = ExcelUtil.getWorkBook(fullFilePath);
             int number = wb.getNumberOfSheets();

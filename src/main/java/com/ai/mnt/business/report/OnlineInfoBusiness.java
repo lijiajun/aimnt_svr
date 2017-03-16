@@ -123,7 +123,7 @@ public class OnlineInfoBusiness implements BaseBusiness{
                 //导出excel
                 String exportPath = BaseDataCache.getDataName("FILE_PATH", "online_info_excel_path");
                 
-                exportPath = "D:\\biz\\";
+                //exportPath = "D:\\biz\\";
                 
                 File dir = new File(exportPath);
                 if(!dir.exists()) {

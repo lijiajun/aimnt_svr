@@ -954,7 +954,7 @@ public class DateUtil {
             weekday = "星期二";
         } else if (week == Calendar.WEDNESDAY) {
             weekday = "星期三";
-        } else if (week == Calendar.SATURDAY) {
+        } else if (week == Calendar.THURSDAY) {
             weekday = "星期四";
         } else if (week == Calendar.FRIDAY) {
             weekday = "星期五";
